@@ -65,8 +65,14 @@ output_layer.set_lrates(0,0)
 
 nnet.backprop(data, labels)
 gradients = []
+# for node in nnet.nodes:
+#     gradients.append(np.concatenate((node.layer.Wgrad.flatten(), node.layer.bgrad.flatten())))
 for node in nnet.nodes:
-    gradients.append(np.concatenate((node.layer.Wgrad.flatten(), node.layer.bgrad.flatten())))
+    if node in [hidden_node, hidden_node2]:
+        gradients.append(np.concatenate((node.layer.Wgrad.flatten(), node.layer.bgrad.flatten()))/2.0)
+    else:
+        gradients.append(np.concatenate((node.layer.Wgrad.flatten(), node.layer.bgrad.flatten())))
+
 grads = np.concatenate(gradients)
 
 weights = nnet.get_weight_vector()
