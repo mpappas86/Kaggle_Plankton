@@ -92,6 +92,7 @@ input_layer1.set_lrates(0,0)
 input_layer2.set_lrates(0,0)
 hidden_layer1.set_lrates(0,0)
 hidden_layer2.set_lrates(0,0)
+hidden_layer3.set_lrates(0,0)
 output_layer1.set_lrates(0,0)
 output_layer2.set_lrates(0,0)
 
