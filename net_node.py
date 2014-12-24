@@ -19,6 +19,21 @@ class Net_Node(object):
         self.latch_step = latch_step
         self.input_checkin = 0
 
+    def get_num_params(self, *args, **kwargs):
+        return self.layer.get_num_params()
+        
+    def set_weights(self, *args, **kwargs):
+        self.layer.set_weights(*args, **kwargs)
+
+    def get_weights(self, *args, **kwargs):
+        return self.layer.get_weights(*args, **kwargs)
+
+    def set_weight_vector(self, *args, **kwargs):
+        self.layer.set_weight_vector(*args, **kwargs)
+
+    def get_weight_vector(self, *args, **kwargs):
+        return self.layer.get_weight_vector(*args, **kwargs)
+        
     def zero_buffers(self):
         self.input_buffer = np.zeros(self.input_buffer.shape)
         self.output_buffer = np.zeros(self.output_buffer.shape)

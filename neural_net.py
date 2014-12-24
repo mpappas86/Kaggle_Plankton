@@ -13,8 +13,10 @@ class Neural_Net(Net):
         net_output = self.retrieve_output()
         self.zero_buffers()
         output_data = self.dcost(net_output, target)
+        for node in self.nodes:
+            node.layer.backprop_setup()
         for output_node, ranges in self.outputs.iteritems():
-            output_node.output_buffer[ranges[1],:] = output_data[ranges[0],:]
+            output_node.output_buffer[ranges[1],:] += output_data[ranges[0],:]
             output_node.push_downstream()
         for node in self.nodes:
             node.layer.update_weights()

@@ -15,23 +15,23 @@ class Neural_Layer(Layer):
         self.savedup = self.W.dot(self.dataup)+self.b
         return self.f(self.savedup)
 
+    def backprop_setup(self):
+        self.Wgrad = np.zeros(self.Wgrad.shape)
+        self.bgrad = np.zeros(self.bgrad.shape)        
+    
     def backprop(self, upstream):
         delta = upstream*self.df(self.savedup)
-        self.Wgrad -= self.lr/self.batch_size*delta.dot(self.dataup.T)
-        self.bgrad -= self.lrb/self.batch_size*delta.sum(1)[:,np.newaxis]
+        self.Wgrad += delta.dot(self.dataup.T)
+        self.bgrad += delta.sum(1)[:,np.newaxis]
         self.updated_yet = False
         return self.W.T.dot(delta)
 
     def update_weights(self):
         if not self.updated_yet:
-            self.Wspeed = self.nu*self.Wspeed - (self.lr*self.lam)*self.W + self.Wgrad
-            self.bspeed = self.nub*self.bspeed + self.bgrad
+            self.Wspeed = self.nu*self.Wspeed - (self.lr*self.lam)*self.W - self.lr/self.batch_size*self.Wgrad
+            self.bspeed = self.nub*self.bspeed - self.lrb/self.batch_size*self.bgrad
             self.W += self.Wspeed
             self.b += self.bspeed
-            self.Wgrad = np.zeros(self.Wgrad.shape)
-            self.bgrad = np.zeros(self.bgrad.shape)
-            self.dataup = None
-            self.savedup = None
 
     def set_df(self, df):
         self.df = df

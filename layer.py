@@ -21,9 +21,23 @@ class Layer(object):
     def predict(self, data):
         return self.f(self.W.dot(data)+self.b)
 
+    def get_num_params(self):
+        return np.size(self.W)+np.size(self.b)
+    
     def set_weights(self, W, b):
         self.W = W
         self.b = b
+
+    def get_weights(self):
+        return self.W, self.b
+
+    # Returns a 1D flattened vector of the weights, in the form [<row 1 of W>, <row 2 of W>,... <row N of W>, <b>]
+    def get_weight_vector(self):
+        return np.concatenate((self.W.flatten(), self.b.flatten()))
+
+    def set_weight_vector(self, weights):
+        self.W = weights[:np.size(self.W)].reshape(self.W.shape)
+        self.b = weights[np.size(self.W):].reshape(self.b.shape)
 
     def set_f(self,f):
         self.f = f
