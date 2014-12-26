@@ -55,7 +55,7 @@ class Net_Node(object):
         if not self.latch_step:
             self.latch_input()
         # Calculate the output of this node
-        self.output_buffer = self.layer.predict(self.true_input)
+        self.output_buffer = self.layer.predict(self.true_input, self)
         # Push the output to all of the nodes depending on this node for input
         for output_node, output_range in self.outputs.iteritems():
             output_node.take_input(self.output_buffer[output_range,:], self)

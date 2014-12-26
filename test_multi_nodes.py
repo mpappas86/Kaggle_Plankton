@@ -65,8 +65,9 @@ output_layer.set_lrates(0,0)
 
 nnet.backprop(data, labels)
 gradients = []
-for node in nnet.nodes:
-    gradients.append(np.concatenate((node.layer.Wgrad.flatten(), node.layer.bgrad.flatten())))
+layerset = nnet.get_layerset()
+for layer in layerset:
+    gradients.append(np.concatenate((layer.Wgrad.flatten(), layer.bgrad.flatten())))
 grads = np.concatenate(gradients)
 
 weights = nnet.get_weight_vector()

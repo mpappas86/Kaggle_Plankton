@@ -18,7 +18,7 @@ class Layer(object):
         self.batch_size = None
         self.updated_yet = True
         
-    def predict(self, data):
+    def predict(self, data, node):
         return self.f(self.W.dot(data)+self.b)
 
     def get_num_params(self):

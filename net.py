@@ -23,17 +23,25 @@ class Net(object):
             output_data[ranges[0],:] = output_node.output_buffer[ranges[1],:]
         return output_data
 
+    def get_layerset(self):
+        layers = set()
+        for node in self.nodes:
+            layers.add(node.layer)
+        return layers
+    
     def get_weight_vector(self):
         weights = []
-        for node in self.nodes:
-            weights.append(node.get_weight_vector())
+        lset = self.get_layerset()
+        for layer in lset:
+            weights.append(layer.get_weight_vector())
         return np.concatenate(weights)
 
     def set_weight_vector(self, weights):
         counter = 0
-        for node in self.nodes:
-            num_params = node.get_num_params()
-            node.set_weight_vector(weights[counter:(counter+num_params)])
+        lset = self.get_layerset()
+        for layer in lset:
+            num_params = layer.get_num_params()
+            layer.set_weight_vector(weights[counter:(counter+num_params)])
             counter = counter + num_params
 
     def zero_buffers(self):

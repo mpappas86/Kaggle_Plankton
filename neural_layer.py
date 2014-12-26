@@ -5,25 +5,26 @@ class Neural_Layer(Layer):
     def __init__(self, input_size, output_size):
         super(Neural_Layer, self).__init__(input_size, output_size)
         self.df = lambda x: 0*x+1
-        self.dataup = None
-        self.savedup = None
+        self.updated_yet = True
 
     # Each row of the data is a feature, and each column is a sample
-    def predict(self, data):
+    def predict(self, data, node):
         self.batch_size = float(data.shape[1])
-        self.dataup = data
-        self.savedup = self.W.dot(self.dataup)+self.b
-        return self.f(self.savedup)
+        node.dataup = data
+        node.savedup = self.W.dot(node.dataup)+self.b
+        return self.f(node.savedup)
 
     def backprop_setup(self):
         self.Wgrad = np.zeros(self.Wgrad.shape)
         self.bgrad = np.zeros(self.bgrad.shape)        
     
-    def backprop(self, upstream):
-        delta = upstream*self.df(self.savedup)
-        self.Wgrad += delta.dot(self.dataup.T)
+    def backprop(self, upstream, node):
+        delta = self.df(node.savedup)*upstream
+        self.Wgrad += delta.dot(node.dataup.T)
         self.bgrad += delta.sum(1)[:,np.newaxis]
         self.updated_yet = False
+        node.savedup = None
+        node.dataup = None
         return self.W.T.dot(delta)
 
     def update_weights(self):
@@ -32,6 +33,7 @@ class Neural_Layer(Layer):
             self.bspeed = self.nub*self.bspeed - self.lrb/self.batch_size*self.bgrad
             self.W += self.Wspeed
             self.b += self.bspeed
+            self.updated_yet = True
 
     def set_df(self, df):
         self.df = df
