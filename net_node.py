@@ -11,9 +11,9 @@ class Net_Node(object):
     def __init__(self, layer, name="Anonymous Node", latch_step = False):
         self.layer = layer
         self.name = name
-        self.input_buffer = np.zeros((self.layer.W.shape[1],1))
-        self.true_input = np.zeros((self.layer.W.shape[1],1))
-        self.output_buffer = np.zeros((self.layer.W.shape[0],1))
+        self.input_buffer = np.zeros((self.layer.shape[1],1))
+        self.true_input = np.zeros((self.layer.shape[1],1))
+        self.output_buffer = np.zeros((self.layer.shape[0],1))
         self.inputs = {}
         self.outputs = {}
         self.latch_step = latch_step
@@ -63,9 +63,9 @@ class Net_Node(object):
             output_node.push_output()
 
     def set_buffer_depth(self, depth):
-        self.input_buffer = np.zeros((self.layer.W.shape[1],depth))
-        self.true_input = np.zeros((self.layer.W.shape[1],depth))
-        self.output_buffer = np.zeros((self.layer.W.shape[0],depth))
+        self.input_buffer = np.zeros((self.layer.shape[1],depth))
+        self.true_input = np.zeros((self.layer.shape[1],depth))
+        self.output_buffer = np.zeros((self.layer.shape[0],depth))
 
     def add_input(self, input_node, input_range):
         self.inputs[input_node] = input_range

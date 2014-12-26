@@ -33,7 +33,9 @@ class Net(object):
         weights = []
         lset = self.get_layerset()
         for layer in lset:
-            weights.append(layer.get_weight_vector())
+            tmp = layer.get_weight_vector()
+            if not tmp is None:
+                weights.append(layer.get_weight_vector())
         return np.concatenate(weights)
 
     def set_weight_vector(self, weights):
@@ -41,8 +43,9 @@ class Net(object):
         lset = self.get_layerset()
         for layer in lset:
             num_params = layer.get_num_params()
-            layer.set_weight_vector(weights[counter:(counter+num_params)])
-            counter = counter + num_params
+            if not num_params is None:
+                layer.set_weight_vector(weights[counter:(counter+num_params)])
+                counter = counter + num_params
 
     def zero_buffers(self):
         for node in self.nodes:
