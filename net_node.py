@@ -102,5 +102,5 @@ class Net_Node(object):
     def set_outputs(self, outputs):
         self.outputs = outputs
 
-    def __str__(self):
-        return self.name + " (" + repr(id(self)) + ")"
+    def __repr__(self):
+        return "<" + self.name + " " + repr(self.layer.shape) + " (" + repr(id(self)) + ")>"

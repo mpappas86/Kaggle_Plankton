@@ -9,11 +9,11 @@ input_layer = Sigmoid_Layer(101,44)
 hidden_layer = Maxpool_Layer(2)
 output_layer = Sigmoid_Layer(22,10)
 
-input_node = Neural_Node(input_layer)
+input_node = Neural_Node(input_layer, name="Input")
 hidden_nodes = []
 for x in xrange(22):
-    hidden_nodes.append(Neural_Node(hidden_layer))
-output_node = Neural_Node(output_layer)
+    hidden_nodes.append(Neural_Node(hidden_layer, name="Maxpool "+str(x)))
+output_node = Neural_Node(output_layer, name="Output")
 
 # connect input and hidden nodes
 for x in xrange(22):
