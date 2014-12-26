@@ -13,7 +13,7 @@ class Maxpool_Layer(object):
         
     def backprop(self, upstream, node):
         delta = np.zeros((self.shape[1],upstream.shape[1]))
-        for elnum in xrange(upstream.shape[0]):
+        for elnum in xrange(upstream.shape[1]):
             delta[node.savedup[elnum], elnum] = upstream[0,elnum]
         return delta
 
