@@ -6,7 +6,28 @@ class Neural_Net(Net):
         super(Neural_Net, self).__init__(input_size, output_size)
         self.cost_function = lambda x,y: 0.5*np.sum(((x-y)*(x-y)).flatten())
         self.dcost = lambda x,y: x-y
-        
+
+    def make_mini(self, data, startindex, mbsize):
+        newindex = startindex+mbsize
+        if newindex <= data.shape[1]:
+            return data[:,startindex:newindex], newindex
+        else:
+            newindex = newindex - data.shape[1]
+        return np.concatenate((data[:,startindex:], data[:,:newindex]),1), newindex
+
+    def train_mini(self, data, labels, mbsize, epochs, tag='', taginc=100):
+        self.set_buffer_depth(mbsize)
+        rcerror = []
+        index = 0
+        for y in xrange(int(data.shape[1]*epochs/float(mbsize))):
+            mbdata, phony = self.make_mini(data, index, mbsize)
+            mblabels, index = self.make_mini(labels, index, mbsize)
+            self.backprop(mbdata, mblabels)
+            rcerror.append(self.cost(mbdata,mblabels))
+            if (y % taginc) == taginc-1:
+                print tag+str(y), sum(rcerror[-taginc:])/float(taginc)
+        return rcerror
+    
     def backprop(self, data, target):
         self.input_data(data)
         self.forward_pass()
