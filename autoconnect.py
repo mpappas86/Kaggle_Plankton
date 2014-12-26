@@ -2,13 +2,15 @@ import numpy as np
 
 # connections is list with elements of the form (<input_node, output_node, number of connections>).  If a node should connect to the input of the net, use "input" in place of input_node.  If a node should connect to the output of the net, use "output" in place of output_node.
 # we don't currently deal with wraparound
-def autoconnect(net, connections, verbose=True):
+def autoconnect(net, connections):
     # pairs of the form [input counter, output counter]
+    graphfile = "digraph G {\n"
     connectionlist = {}
     connectionlist["input"] = [0,0]
     connectionlist["output"] = [0,0]
     for connection in connections:
         (input_node, output_node, num_connections) = connection
+        graphfile += "\t" + str(input_node) + " -> " + str(output_node) + ";\n"
         if not input_node in connectionlist:
             connectionlist[input_node] = [0,0]
         if not output_node in connectionlist:
@@ -28,3 +30,5 @@ def autoconnect(net, connections, verbose=True):
             input_node.add_output(output_node, xrange(inpval,inpend))
         connectionlist[input_node][1] = inpend
         connectionlist[output_node][0] = outend
+    graphfile += "}"
+    return graphfile

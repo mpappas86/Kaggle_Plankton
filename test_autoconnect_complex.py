@@ -50,7 +50,9 @@ for x in xrange(10,22):
 connections.extend([(output_node1, "output", 6),
                  (output_node2, "output", 4)])
     
-autoconnect(nnet, connections)
+gfile = autoconnect(nnet, connections)
+with open(r'autoconnect_complex.gv', 'w') as f:
+    f.write(gfile)
 
 # generate some data
 data = np.random.rand(input_layer.W.shape[1],5)

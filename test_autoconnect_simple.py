@@ -18,7 +18,9 @@ connections = [("input", input_node, 101),
                (hidden_node, output_node, 22),
                (output_node, "output", 10)]
 
-autoconnect(nnet, connections)
+gfile = autoconnect(nnet, connections)
+with open(r'autoconnect_simple.gv', 'w') as f:
+    f.write(gfile)
 
 # generate some data
 data = np.random.rand(input_layer.W.shape[1],5)
