@@ -75,7 +75,8 @@ class Net(object):
     def remove_input(self, input_node):
         self.inputs.pop(input_node, None)
         self.remove_node(input_node)
-            
+
+    # ranges is in the form of (<range in the input data, range in the input node>)
     def add_input(self, input_node, ranges):
         self.inputs[input_node] = ranges
         if not input_node in self.nodes:
@@ -87,7 +88,8 @@ class Net(object):
     def remove_output(self, output_node):
         self.outputs.pop(output_node, None)
         self.remove_node(output_node)
-            
+        
+    # ranges is in the form of (<range in the output data, range in the output node>)
     def add_output(self, output_node, ranges):
         self.outputs[output_node] = ranges
         if not output_node in self.nodes:
