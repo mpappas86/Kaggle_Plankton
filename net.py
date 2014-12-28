@@ -27,7 +27,7 @@ class Net(object):
         layers = set()
         for node in self.nodes:
             layers.add(node.layer)
-        return layers
+        return sorted(list(layers), key=lambda x: x.order)
     
     def get_weight_vector(self):
         weights = []

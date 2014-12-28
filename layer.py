@@ -2,7 +2,14 @@ import numpy as np
 
 # A Layer defines a mapping between one vector and another vector of the form output = function(matrix*input + bias).  The layer also keeps learning rates and momentum vectors for each of the weights in the matrix and bias, along with momentum sacle factors and a regularization penalty on the matrix
 class Layer(object):
-    def __init__(self, input_size, output_size):
+    globalindex = 0
+    
+    def __init__(self, input_size, output_size, order=None):
+        if order == None:
+            self.order = Layer.globalindex
+            Layer.globalindex = Layer.globalindex+1
+        else:
+            self.order = order
         self.shape = (output_size, input_size)
         self.W = np.random.normal(0,1,(output_size, input_size))
         self.b = np.random.normal(0,1,(output_size,1))
