@@ -1,0 +1,1 @@
+The python scripts assume that you have two folders in the same directory named test/ and train/ containing the test and training data. THESE ARE GITIGNORED. Also gitignored is the sample csv if you download that.
