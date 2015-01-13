@@ -9,14 +9,14 @@ from sklearn.metrics import classification_report
 from matplotlib import pyplot as plt
 from matplotlib import colors
 from pylab import cm
-from skimage import segmentation
+from skimage import segmentation, measure, morphology
 from skimage.morphology import watershed
-from skimage import measure
-from skimage import morphology
 import numpy as np
 import pandas as pd
 from scipy import ndimage
 from skimage.feature import peak_local_max
+import shape_features as sf
+import grading
 # make graphics inline
 #%matplotlib inline
 import warnings
@@ -26,41 +26,6 @@ warnings.filterwarnings("ignore")
 path = '/Users/mikep/Desktop/Kaggle/Plankton'
 directory_names = list(set(glob.glob(os.path.join(path,"train", "*"))\
  ).difference(set(glob.glob(os.path.join(path,"train","*.*")))))
-
-# find the largest nonzero region
-def getLargestRegion(props, labelmap, imagethres):
-    regionmaxprop = None
-    for regionprop in props:
-        # check to see if the region is at least 50% nonzero
-        if sum(imagethres[labelmap == regionprop.label])*1.0/regionprop.area < 0.50:
-            continue
-        if regionmaxprop is None:
-            regionmaxprop = regionprop
-        if regionmaxprop.filled_area < regionprop.filled_area:
-            regionmaxprop = regionprop
-    return regionmaxprop
-
-def getMinorMajorRatio(image):
-    image = image.copy()
-    # Create the thresholded image to eliminate some of the background
-    imagethr = np.where(image > np.mean(image),0.,1.0)
-
-    #Dilate the image
-    imdilated = morphology.dilation(imagethr, np.ones((4,4)))
-
-    # Create the label list
-    label_list = measure.label(imdilated)
-    label_list = imagethr*label_list
-    label_list = label_list.astype(int)
-    
-    region_list = measure.regionprops(label_list)
-    maxregion = getLargestRegion(region_list, label_list, imagethr)
-    
-    # guard against cases where the segmentation fails by providing zeros
-    ratio = 0.0
-    if ((not maxregion is None) and  (maxregion.major_axis_length != 0.0)):
-        ratio = 0.0 if maxregion is None else  maxregion.minor_axis_length*1.0 / maxregion.major_axis_length
-    return ratio
 
 #get the total training images
 numberofImages = 0
@@ -84,7 +49,6 @@ X = np.zeros((num_rows, num_features), dtype=float)
 # y is the numeric class label 
 y = np.zeros((num_rows))
 
-files = []
 # Generate training data
 i = 0    
 label = 0
@@ -106,8 +70,7 @@ for folder in directory_names:
             # Read in the images and create the features
             nameFileImage = "{0}{1}{2}".format(fileNameDir[0], os.sep, fileName)            
             image = imread(nameFileImage, as_grey=True)
-            files.append(nameFileImage)
-            axisratio = getMinorMajorRatio(image)
+            axisratio = sf.getMinorMajorRatio(image)
             image = resize(image, (maxPixel, maxPixel))
             
             # Store the rescaled image pixels and the axis ratio
@@ -122,33 +85,6 @@ for folder in directory_names:
             if i in report: print np.ceil(i *100.0 / num_rows), "% done"
     label += 1
 
-# Loop through the classes two at a time and compare their distributions of the Width/Length Ratio
-
-#Create a DataFrame object to make subsetting the data on the class 
-df = pd.DataFrame({"class": y[:], "ratio": X[:, num_features-1]})
-
-f = plt.figure(figsize=(30, 20))
-#we suppress zeros and choose a few large classes to better highlight the distributions.
-df = df.loc[df["ratio"] > 0]
-minimumSize = 20 
-counts = df["class"].value_counts()
-largeclasses = [int(x) for x in list(counts.loc[counts > minimumSize].index)]
-# Loop through 40 of the classes 
-for j in range(0,40,2):
-    subfig = plt.subplot(4, 5, j/2 +1)
-    # Plot the normalized histograms for two classes
-    classind1 = largeclasses[j]
-    classind2 = largeclasses[j+1]
-    n, bins,p = plt.hist(df.loc[df["class"] == classind1]["ratio"].values,\
-                         alpha=0.5, bins=[x*0.01 for x in range(100)], \
-                         label=namesClasses[classind1].split(os.sep)[-1], normed=1)
-
-    n2, bins,p = plt.hist(df.loc[df["class"] == (classind2)]["ratio"].values,\
-                          alpha=0.5, bins=bins, label=namesClasses[classind2].split(os.sep)[-1],normed=1)
-    subfig.set_ylim([0.,10.])
-    plt.legend(loc='upper right')
-    plt.xlabel("Width/Length Ratio")
-
 print "Training"
 # n_estimators is the number of decision trees
 # max_features also known as m_try is set to the default value of the square root of the number of features
@@ -157,49 +93,51 @@ scores = cross_validation.cross_val_score(clf, X, y, cv=5, n_jobs=1);
 print "Accuracy of all classes"
 print np.mean(scores)
 
-kf = KFold(y, n_folds=5)
-y_pred = y * 0
-for train, test in kf:
-    X_train, X_test, y_train, y_test = X[train,:], X[test,:], y[train], y[test]
-    clf = RF(n_estimators=100, n_jobs=3)
-    clf.fit(X_train, y_train)
-    y_pred[test] = clf.predict(X_test)
-print classification_report(y, y_pred, target_names=namesClasses)
-
-def multiclass_log_loss(y_true, y_pred, eps=1e-15):
-    """Multi class version of Logarithmic Loss metric.
-    https://www.kaggle.com/wiki/MultiClassLogLoss
-
-    Parameters
-    ----------
-    y_true : array, shape = [n_samples]
-            true class, intergers in [0, n_classes - 1)
-    y_pred : array, shape = [n_samples, n_classes]
-
-    Returns
-    -------
-    loss : float
-    """
-    predictions = np.clip(y_pred, eps, 1 - eps)
-
-    # normalize row sums to 1
-    predictions /= predictions.sum(axis=1)[:, np.newaxis]
-
-    actual = np.zeros(y_pred.shape)
-    n_samples = actual.shape[0]
-    actual[np.arange(n_samples), y_true.astype(int)] = 1
-    vectsum = np.sum(actual * np.log(predictions))
-    loss = -1.0 / n_samples * vectsum
-    return loss
-
 # Get the probability predictions for computing the log-loss function
 kf = KFold(y, n_folds=5)
 # prediction probabilities number of samples, by number of classes
-y_pred = np.zeros((len(y),len(set(y))))
+y_prob_pred = np.zeros((len(y),len(set(y))))
+y_best_pred = y*0
 for train, test in kf:
     X_train, X_test, y_train, y_test = X[train,:], X[test,:], y[train], y[test]
     clf = RF(n_estimators=100, n_jobs=3)
     clf.fit(X_train, y_train)
-    y_pred[test] = clf.predict_proba(X_test)
+    y_best_pred[test] = clf.predict(X_test)
+    y_prob_pred[test] = clf.predict_proba(X_test)
 
-print(multiclass_log_loss(y, y_pred))
+print classification_report(y, y_pred, target_names=namesClasses)
+print(grading.multiclass_log_loss(y, y_pred))
+
+
+
+
+
+#EXAMPLE CODE FOR PLOTTING THINGS AGAINST EACH OTHER, NOT NECESSARY FOR RUN!
+
+# Loop through the classes two at a time and compare their distributions of the Width/Length Ratio
+
+# #Create a DataFrame object to make subsetting the data on the class 
+# df = pd.DataFrame({"class": y[:], "ratio": X[:, num_features-1]})
+
+# f = plt.figure(figsize=(30, 20))
+# #we suppress zeros and choose a few large classes to better highlight the distributions.
+# df = df.loc[df["ratio"] > 0]
+# minimumSize = 20 
+# counts = df["class"].value_counts()
+# largeclasses = [int(x) for x in list(counts.loc[counts > minimumSize].index)]
+# # Loop through 40 of the classes 
+# for j in range(0,40,2):
+#     subfig = plt.subplot(4, 5, j/2 +1)
+#     # Plot the normalized histograms for two classes
+#     classind1 = largeclasses[j]
+#     classind2 = largeclasses[j+1]
+#     n, bins,p = plt.hist(df.loc[df["class"] == classind1]["ratio"].values,\
+#                          alpha=0.5, bins=[x*0.01 for x in range(100)], \
+#                          label=namesClasses[classind1].split(os.sep)[-1], normed=1)
+
+#     n2, bins,p = plt.hist(df.loc[df["class"] == (classind2)]["ratio"].values,\
+#                           alpha=0.5, bins=bins, label=namesClasses[classind2].split(os.sep)[-1],normed=1)
+#     subfig.set_ylim([0.,10.])
+#     plt.legend(loc='upper right')
+#     plt.xlabel("Width/Length Ratio")
+
