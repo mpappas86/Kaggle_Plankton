@@ -35,3 +35,9 @@ def getMinorMajorRatio(image):
     if ((not maxregion is None) and  (maxregion.major_axis_length != 0.0)):
         ratio = 0.0 if maxregion is None else  maxregion.minor_axis_length*1.0 / maxregion.major_axis_length
     return ratio
+
+def getPercentPixelsAboveAverage(image):
+    image = image.copy()
+    image_threshold = image - np.mean(image)
+    over_count = np.where(image_threshold > 0, 1.0, 0.0)
+    return np.sum(over_count)/over_count.size

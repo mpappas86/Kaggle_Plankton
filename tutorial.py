@@ -41,7 +41,7 @@ for folder in directory_names:
 maxPixel = 25
 imageSize = maxPixel * maxPixel
 num_rows = numberofImages # one row for each image in the training dataset
-num_features = imageSize + 1 # for our ratio
+num_features = imageSize + 2 # for our ratio
 
 # X is the feature vector with one row of features per image
 # consisting of the pixel values and our metric
@@ -71,11 +71,13 @@ for folder in directory_names:
             nameFileImage = "{0}{1}{2}".format(fileNameDir[0], os.sep, fileName)            
             image = imread(nameFileImage, as_grey=True)
             axisratio = sf.getMinorMajorRatio(image)
+            pixels_above_mean = sf.getPercentPixelsAboveAverage(image)
             image = resize(image, (maxPixel, maxPixel))
             
             # Store the rescaled image pixels and the axis ratio
-            X[i, 0:imageSize] = np.reshape(image, (1, imageSize))
-            X[i, imageSize] = axisratio
+            X[i, 0:imageSize-1] = np.reshape(image, (1, imageSize))
+            X[i, imageSize-1] = axisratio
+            X[i, imageSize] = pixels_above_mean
             
             # Store the classlabel
             y[i] = label
