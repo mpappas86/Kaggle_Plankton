@@ -107,8 +107,8 @@ for train, test in kf:
     y_best_pred[test] = clf.predict(X_test)
     y_prob_pred[test] = clf.predict_proba(X_test)
 
-print classification_report(y, y_pred, target_names=namesClasses)
-print(grading.multiclass_log_loss(y, y_pred))
+print classification_report(y, y_best_pred, target_names=namesClasses)
+print(grading.multiclass_log_loss(y, y_prob_pred))
 
 
 
