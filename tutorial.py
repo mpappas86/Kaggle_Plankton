@@ -75,9 +75,9 @@ for folder in directory_names:
             image = resize(image, (maxPixel, maxPixel))
             
             # Store the rescaled image pixels and the axis ratio
-            X[i, 0:imageSize-1] = np.reshape(image, (1, imageSize))
-            X[i, imageSize-1] = axisratio
-            X[i, imageSize] = pixels_above_mean
+            X[i, 0:imageSize] = np.reshape(image, (1, imageSize))
+            X[i, imageSize] = axisratio
+            X[i, imageSize+1] = pixels_above_mean
             
             # Store the classlabel
             y[i] = label
