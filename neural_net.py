@@ -19,13 +19,14 @@ class Neural_Net(Net):
         self.set_buffer_depth(mbsize)
         rcerror = []
         index = 0
-        for y in xrange(int(data.shape[1]*epochs/float(mbsize))):
+        lim = data.shape[1]*epochs/float(mbsize)
+        for y in xrange(int(lim)):
             mbdata, phony = self.make_mini(data, index, mbsize)
             mblabels, index = self.make_mini(labels, index, mbsize)
             self.backprop(mbdata, mblabels)
             rcerror.append(self.cost(mbdata,mblabels))
             if (y % taginc) == taginc-1:
-                print tag+str(y), sum(rcerror[-taginc:])/float(taginc)
+                print tag+str(y),100*round(y/lim,4),sum(rcerror[-taginc:])/float(taginc)
         return rcerror
     
     def backprop(self, data, target):
