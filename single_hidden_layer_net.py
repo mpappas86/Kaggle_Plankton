@@ -1,23 +1,5 @@
 from skimage.io import imread
 from skimage.transform import resize
-# from sklearn.ensemble import RandomForestClassifier as RF
-# import glob
-# import os
-# from sklearn import cross_validation
-# from sklearn.cross_validation import StratifiedKFold as KFold
-# from sklearn.metrics import classification_report
-# from matplotlib import pyplot as plt
-# from matplotlib import colors
-# from pylab import cm
-# from skimage import segmentation, measure, morphology
-# from skimage.morphology import watershed
-# import numpy as np
-# import pandas as pd
-# from scipy import ndimage
-# from skimage.feature import peak_local_max
-# import shape_features as sf
-# import grading
-# import warnings
 import os
 np.random.seed(1)
 
@@ -41,7 +23,7 @@ image_size = image_width*image_height
 rawdata = []
 counter = 0
 for cls in classcounts:
-    counter = counter + 1    
+    counter = counter + 1
     print "Importing " + cls[0], str(counter) + " of " + str(len(classcounts))
     label = np.array([x == cls[0] for x in labelnames])
     filepath = path + "/train/" + cls[0] + "/"
@@ -75,5 +57,23 @@ gfile = autoconnect(nnet, connections)
 with open(r'single_hidden_layer_net.gv', 'w') as f:
     f.write(gfile)
 
-# Need to do xval instead of training on all data.  I'll do that tomorrow
-t1 = nnet.train_mini(data, labels, mbsize=10, epochs=5, tag="5 epochs of training ", taginc=100)
+train_index = int(data.shape[1]*0.7)
+valid_index = int(data.shape[1]*0.9)
+train_data = data[:,:train_index]
+train_labels = labels[:,:train_index]
+valid_data = data[:,train_index:valid_index]
+valid_labels = labels[:,train_index:valid_index]
+test_data = data[:,valid_index:]
+test_labels = labels[:,valid_index:]
+
+# Still need to use the right cost function - currently using squared error
+t1, v1 = nnet.train_mini(train_data, train_labels, mbsize=10, epochs=5, tag="5 epochs of training ", taginc=100, valid_data=valid_data, valid_labels=valid_labels)
+
+nnet.set_buffer_depth(test_data.shape[1])
+trained_cost = nnet.cost(test_data, test_labels)/test_data.shape[1]
+
+nnet.input_data(test_data)
+nnet.forward_pass()
+predicted_labels = nnet.retrieve_output()
+import grading
+llos = grading.multiclass_log_loss(test_labels.argmax(0), predicted_labels.T)
