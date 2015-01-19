@@ -2,3 +2,8 @@ test/
 train/
 .DS_Store
 sampleSubmission.csv
+*~
+.*~
+*.pdf
+*.zip
+*.pyc
