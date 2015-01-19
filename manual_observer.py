@@ -46,6 +46,9 @@ images = [0]*numImagesAtOnce
 nIm = 0
 justShowed = ""
 
+def preProcessImages(image):
+    return resize(image, (25, 25))
+
 print "Reading images"
 # Navigate through the list of directories
 for folder in directory_names:
@@ -59,7 +62,7 @@ for folder in directory_names:
             
             # Read in the images and create the features
             nameFileImage = "{0}{1}{2}".format(fileNameDir[0], os.sep, fileName)            
-            image = imread(nameFileImage, as_grey=True)
+            image = preProcessImages(imread(nameFileImage, as_grey=True))
             if(not justShowed==currentClass):
                 images[nIm] = image
                 nIm += 1
