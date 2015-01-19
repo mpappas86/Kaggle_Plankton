@@ -3,8 +3,8 @@ import os
 import pre_data
 import numpy as np
 
-train_img_path = '/Users/mikep/Desktop/Kaggle/Plankton/train'
-test_img_path = '/Users/mikep/Desktop/Kaggle/Plankton/test'
+train_img_path = os.getcwd()+"/train/"
+test_img_path = os.getcwd()+"/test/"
 #test_collection = io.imread_collection(os.path.join(test_img_path, '*.jpg'))
 
 #Unfortunately all the images are different sizes, so we can't directly do

@@ -20,10 +20,11 @@ import grading
 # make graphics inline
 #%matplotlib inline
 import warnings
+import os
 warnings.filterwarnings("ignore")
 
 # get the classnames from the directory structure
-path = '/Users/mikep/Desktop/Kaggle/Plankton'
+path = os.getcwd()
 directory_names = list(set(glob.glob(os.path.join(path,"train", "*"))\
  ).difference(set(glob.glob(os.path.join(path,"train","*.*")))))
 
