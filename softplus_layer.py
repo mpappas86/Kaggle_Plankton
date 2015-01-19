@@ -19,4 +19,3 @@ class Softplus_Layer(Neural_Layer):
         self.dataup = data
         self.savedup = self.f(self.W.dot(self.dataup)+self.b)
         return copy.copy(self.savedup)
-
