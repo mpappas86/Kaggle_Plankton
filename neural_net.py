@@ -15,10 +15,13 @@ class Neural_Net(Net):
             newindex = newindex - data.shape[1]
         return np.concatenate((data[:,startindex:], data[:,:newindex]),1), newindex
 
-    def train_mini(self, data, labels, mbsize, epochs, tag='', taginc=100):
+    def train_mini(self, data, labels, mbsize, epochs, tag='', taginc=100, valid_data=None, valid_labels=None):
         self.set_buffer_depth(mbsize)
         rcerror = []
         index = 0
+        verror = []
+        vindex = 0
+        validation = (valid_data is not None) and (valid_labels is not None)
         lim = data.shape[1]*epochs/float(mbsize)
         for y in xrange(int(lim)):
             mbdata, phony = self.make_mini(data, index, mbsize)
@@ -26,8 +29,14 @@ class Neural_Net(Net):
             self.backprop(mbdata, mblabels)
             rcerror.append(self.cost(mbdata,mblabels))
             if (y % taginc) == taginc-1:
-                print tag+str(y),100*round(y/lim,4),sum(rcerror[-taginc:])/float(taginc)
-        return rcerror
+                if not validation:
+                    print tag+str(y),100*round(y/lim,4),sum(rcerror[-taginc:])/(float(taginc)*float(mbsize))
+                else:
+                    vdata, phony = self.make_mini(valid_data, vindex, mbsize)
+                    vlabels, vindex = self.make_mini(valid_labels, vindex, mbsize)
+                    verror.append(self.cost(vdata, vlabels))
+                    print tag+str(y),100*round(y/lim,4),sum(rcerror[-taginc:])/(float(taginc)*float(mbsize)), verror[-1]/float(mbsize)
+        return rcerror, verror
     
     def backprop(self, data, target):
         self.input_data(data)
