@@ -23,18 +23,29 @@ class Net(object):
             output_data[ranges[0],:] = output_node.output_buffer[ranges[1],:]
         return output_data
 
+    def get_layerset(self):
+        layers = set()
+        for node in self.nodes:
+            layers.add(node.layer)
+        return sorted(list(layers), key=lambda x: x.order)
+    
     def get_weight_vector(self):
         weights = []
-        for node in self.nodes:
-            weights.append(node.get_weight_vector())
+        lset = self.get_layerset()
+        for layer in lset:
+            tmp = layer.get_weight_vector()
+            if not tmp is None:
+                weights.append(layer.get_weight_vector())
         return np.concatenate(weights)
 
     def set_weight_vector(self, weights):
         counter = 0
-        for node in self.nodes:
-            num_params = node.get_num_params()
-            node.set_weight_vector(weights[counter:(counter+num_params)])
-            counter = counter + num_params
+        lset = self.get_layerset()
+        for layer in lset:
+            num_params = layer.get_num_params()
+            if not num_params is None:
+                layer.set_weight_vector(weights[counter:(counter+num_params)])
+                counter = counter + num_params
 
     def zero_buffers(self):
         for node in self.nodes:
@@ -64,7 +75,8 @@ class Net(object):
     def remove_input(self, input_node):
         self.inputs.pop(input_node, None)
         self.remove_node(input_node)
-            
+
+    # ranges is in the form of (<range in the input data, range in the input node>)
     def add_input(self, input_node, ranges):
         self.inputs[input_node] = ranges
         if not input_node in self.nodes:
@@ -76,7 +88,8 @@ class Net(object):
     def remove_output(self, output_node):
         self.outputs.pop(output_node, None)
         self.remove_node(output_node)
-            
+        
+    # ranges is in the form of (<range in the output data, range in the output node>)
     def add_output(self, output_node, ranges):
         self.outputs[output_node] = ranges
         if not output_node in self.nodes:

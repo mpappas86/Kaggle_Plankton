@@ -13,8 +13,8 @@ class Sigmoid_Layer(Neural_Layer):
         return 1.0 / (1.0 + np.exp(-data))
 
     # We only need the simgoid output in backprop, so save that instead of saving just the linear function
-    def predict(self, data):
+    def predict(self, data, node):
         self.batch_size = float(data.shape[1])
-        self.dataup = data
-        self.savedup = self.f(self.W.dot(self.dataup)+self.b)
-        return copy.copy(self.savedup)
+        node.dataup = copy.copy(data)
+        node.savedup = self.f(self.W.dot(node.dataup)+self.b)
+        return copy.copy(node.savedup)

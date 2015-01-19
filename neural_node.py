@@ -5,6 +5,8 @@ class Neural_Node(Net_Node):
     def __init__(self, layer, name="Anonymous Node", latch_step=False):
         super(Neural_Node, self).__init__(layer, name, latch_step)
         self.upstream_checkin = 0
+        self.dataup = None
+        self.savedup = None
     
     def take_upstream(self, upstream, output_node):
         self.output_buffer[self.outputs[output_node],:] += upstream
@@ -14,7 +16,7 @@ class Neural_Node(Net_Node):
         if not self.upstream_checkin == len(self.outputs):
             return
         self.upstream_checkin = 0
-        self.input_buffer = self.layer.backprop(self.output_buffer)
+        self.input_buffer = self.layer.backprop(self.output_buffer, self)
         for input_node, input_range in self.inputs.iteritems():
             input_node.take_upstream(self.input_buffer[input_range,:], self)
             input_node.push_downstream()

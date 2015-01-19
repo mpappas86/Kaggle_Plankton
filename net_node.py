@@ -11,9 +11,9 @@ class Net_Node(object):
     def __init__(self, layer, name="Anonymous Node", latch_step = False):
         self.layer = layer
         self.name = name
-        self.input_buffer = np.zeros((self.layer.W.shape[1],1))
-        self.true_input = np.zeros((self.layer.W.shape[1],1))
-        self.output_buffer = np.zeros((self.layer.W.shape[0],1))
+        self.input_buffer = np.zeros((self.layer.shape[1],1))
+        self.true_input = np.zeros((self.layer.shape[1],1))
+        self.output_buffer = np.zeros((self.layer.shape[0],1))
         self.inputs = {}
         self.outputs = {}
         self.latch_step = latch_step
@@ -55,7 +55,7 @@ class Net_Node(object):
         if not self.latch_step:
             self.latch_input()
         # Calculate the output of this node
-        self.output_buffer = self.layer.predict(self.true_input)
+        self.output_buffer = self.layer.predict(self.true_input, self)
         # Push the output to all of the nodes depending on this node for input
         for output_node, output_range in self.outputs.iteritems():
             output_node.take_input(self.output_buffer[output_range,:], self)
@@ -63,9 +63,9 @@ class Net_Node(object):
             output_node.push_output()
 
     def set_buffer_depth(self, depth):
-        self.input_buffer = np.zeros((self.layer.W.shape[1],depth))
-        self.true_input = np.zeros((self.layer.W.shape[1],depth))
-        self.output_buffer = np.zeros((self.layer.W.shape[0],depth))
+        self.input_buffer = np.zeros((self.layer.shape[1],depth))
+        self.true_input = np.zeros((self.layer.shape[1],depth))
+        self.output_buffer = np.zeros((self.layer.shape[0],depth))
 
     def add_input(self, input_node, input_range):
         self.inputs[input_node] = input_range
@@ -102,5 +102,5 @@ class Net_Node(object):
     def set_outputs(self, outputs):
         self.outputs = outputs
 
-    def __str__(self):
-        return self.name + " (" + repr(id(self)) + ")"
+    def __repr__(self):
+        return "<" + self.name + " " + repr(self.layer.shape) + " (" + repr(id(self)) + ")>"

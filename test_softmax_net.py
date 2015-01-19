@@ -2,36 +2,32 @@ from neural_net import Neural_Net
 from neural_node import Neural_Node
 # from neural_layer import Neural_Layer
 from sigmoid_layer import Sigmoid_Layer
+from softmax_layer import Softmax_Layer
 
 nnet = Neural_Net(101,10)
-input_layer = Sigmoid_Layer(101,38)
-hidden_layer = Sigmoid_Layer(19,11)
-# hidden_layer2 = Sigmoid_Layer(19,11)
-output_layer = Sigmoid_Layer(22,10)
+input_layer = Softmax_Layer(101,37,13.4)
+hidden_layer = Sigmoid_Layer(37,22)
+output_layer = Softmax_Layer(22,10,17.3)
 
 input_node = Neural_Node(input_layer)
 hidden_node = Neural_Node(hidden_layer)
-hidden_node2 = Neural_Node(hidden_layer)
 output_node = Neural_Node(output_layer)
 
 # connect input and hidden nodes
-hidden_node.add_input(input_node, xrange(19))
-hidden_node2.add_input(input_node, xrange(19))
-
-input_node.add_output(hidden_node, xrange(19))
-input_node.add_output(hidden_node2, xrange(19,38))
+# connect full input range of hidden_node to full output range of output_node
+hidden_node.add_input(input_node, xrange(input_layer.W.shape[0]))
+# connect full output range of input_node to full input range of hidden_node
+input_node.add_output(hidden_node, xrange(hidden_layer.W.shape[1]))
 
 # connect hidden and output nodes
-output_node.add_input(hidden_node, xrange(11))
-output_node.add_input(hidden_node2, xrange(11,22))
-
-hidden_node.add_output(output_node, xrange(11))
-hidden_node2.add_output(output_node, xrange(11))
+# connect full input range of output_node to full output range of hidden_node
+output_node.add_input(hidden_node, xrange(hidden_layer.W.shape[0]))
+# connect full output range of hidden_node to full input range of output_node
+hidden_node.add_output(output_node, xrange(output_layer.W.shape[1]))
 
 # add nodes to network
 nnet.add_input(input_node, (xrange(input_layer.W.shape[1]), xrange(input_layer.W.shape[1])))
 nnet.add_node(hidden_node)
-nnet.add_node(hidden_node2)
 nnet.add_output(output_node, (xrange(output_layer.W.shape[0]), xrange(output_layer.W.shape[0])))
 
 # generate some data
@@ -60,7 +56,6 @@ labels = (np.random.rand(10,data.shape[1]) > 0.5).astype(float)
 # gradient check
 input_layer.set_lrates(0,0)
 hidden_layer.set_lrates(0,0)
-# hidden_layer2.set_lrates(0,0)
 output_layer.set_lrates(0,0)
 
 nnet.backprop(data, labels)
