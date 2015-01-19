@@ -1,6 +1,5 @@
 from neural_net import Neural_Net
 from neural_node import Neural_Node
-# from neural_layer import Neural_Layer
 from sigmoid_layer import Sigmoid_Layer
 
 nnet = Neural_Net(101,10)
