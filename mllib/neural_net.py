@@ -2,10 +2,15 @@ from net import Net
 import numpy as np
 
 class Neural_Net(Net):
-    def __init__(self, input_size, output_size):
+    def __init__(self, input_size, output_size, cost_function=None, dcost=None):
         super(Neural_Net, self).__init__(input_size, output_size)
-        self.cost_function = lambda x,y: 0.5*np.sum(((x-y)*(x-y)).flatten())
-        self.dcost = lambda x,y: x-y
+        assert((cost_function is None)  == (dcost is None))
+        if(cost_function is None):    
+            self.cost_function = lambda x,y: 0.5*np.sum(((x-y)*(x-y)).flatten())
+            self.dcost = lambda x,y: x-y
+        else:
+            self.cost_function = cost_function
+            self.dcost = dcost
 
     def make_mini(self, data, startindex, mbsize):
         newindex = startindex+mbsize
