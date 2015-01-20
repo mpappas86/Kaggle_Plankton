@@ -1,6 +1,6 @@
 from skimage import data, io, filter
 import os
-import pre_data
+import training_list
 import numpy as np
 
 train_img_path = os.getcwd()+"/train/"
@@ -14,13 +14,13 @@ test_img_path = os.getcwd()+"/test/"
 #of pixel values. Obviously these won't differ all that much, but I just want to get a 
 #classifying system working.
 
-linear_classifier = [[0, 0, 0, 0] for a_class in pre_data.classifications]
+linear_classifier = [[0, 0, 0, 0] for a_class in training_list.classcounts
 learning_rate = 0.1
 error_threshold = .5
 ix = 0
 
 #For the training images for each classification...
-for a_class in pre_data.classifications:
+for [a_class, a_count] in training_list.classcounts:
   #Collect all the images.
   train_collection = io.imread_collection(os.path.join(train_img_path, a_class, "*.jpg"))
   num_images = len(train_collection)
