@@ -4,7 +4,7 @@ import numpy as np
 class Neural_Net(Net):
     def __init__(self, input_size, output_size):
         super(Neural_Net, self).__init__(input_size, output_size)
-        self.cost_function = lambda x,y: 0.5*np.sum(((x-y)*(x-y)).flatten())
+        self.cost_function = lambda x,y: 0.5*((x-y)*(x-y)).sum(0)
         self.dcost = lambda x,y: x-y
 
     def make_mini(self, data, startindex, mbsize):
@@ -28,7 +28,7 @@ class Neural_Net(Net):
             if (y % taginc) == taginc-1:
                 print tag+str(y),100*round(y/lim,4),sum(rcerror[-taginc:])/float(taginc)
         return rcerror
-    
+
     def backprop(self, data, target):
         self.input_data(data)
         self.forward_pass()
@@ -47,4 +47,4 @@ class Neural_Net(Net):
         self.input_data(data)
         self.forward_pass()
         net_output = self.retrieve_output()
-        return self.cost_function(net_output, target)
+        return self.cost_function(net_output, target).sum()
