@@ -42,7 +42,10 @@ num_inputs = image_size
 num_hiddens = num_inputs
 num_outputs = len(classcounts)
 
-nnet = Neural_Net(num_inputs,num_outputs)
+cf = lambda x,y: -(y*np.log(np.maximum(np.minimum(x,1-(1e-15)),1e-15))).sum(0)
+dcf = lambda x,y: -y/np.maximum(np.minimum(x,1-(1e-15)),1e-15)
+
+nnet = Neural_Net(num_inputs,num_outputs,cost_function=cf,dcost=dcf)
 input_layer = Sigmoid_Layer(num_inputs,num_hiddens)
 output_layer = Softmax_Layer(num_hiddens,num_outputs,1)
 
@@ -66,14 +69,30 @@ valid_labels = labels[:,train_index:valid_index]
 test_data = data[:,valid_index:]
 test_labels = labels[:,valid_index:]
 
-# Still need to use the right cost function - currently using squared error
-t1, v1 = nnet.train_mini(train_data, train_labels, mbsize=10, epochs=5, tag="5 epochs of training ", taginc=100, valid_data=valid_data, valid_labels=valid_labels)
+t1, v1 = nnet.train_mini(train_data, train_labels, mbsize=10, epochs=5, tag="5 epochs of random-prior training ", taginc=100, valid_data=valid_data, valid_labels=valid_labels)
 
 nnet.set_buffer_depth(test_data.shape[1])
-trained_cost = nnet.cost(test_data, test_labels)/test_data.shape[1]
-
 nnet.input_data(test_data)
 nnet.forward_pass()
-predicted_labels = nnet.retrieve_output()
+random_predicted_labels = nnet.retrieve_output()
 import grading
-llos = grading.multiclass_log_loss(test_labels.argmax(0), predicted_labels.T)
+random_llos = grading.multiclass_log_loss(test_labels.argmax(0), random_predicted_labels.T)
+
+weights = nnet.get_weight_vector()
+nnet.set_weight_vector(np.random.randn(weights.shape[0])*1e-10)
+
+t1, v1 = nnet.train_mini(train_data, train_labels, mbsize=10, epochs=5, tag="5 epochs of uniform-prior training ", taginc=100, valid_data=valid_data, valid_labels=valid_labels)
+
+nnet.set_buffer_depth(test_data.shape[1])
+nnet.input_data(test_data)
+nnet.forward_pass()
+prior_predicted_labels = nnet.retrieve_output()
+import grading
+prior_llos = grading.multiclass_log_loss(test_labels.argmax(0), prior_predicted_labels.T)
+
+print "Random prior cost after 5 epochs:", random_llos
+print "Uniform prior cost after 5 epochs:", prior_llos
+
+import pickle
+with open(r'single_hidden_layer_net.pkl','w') as f:
+    pickle.dump(weights, f)
