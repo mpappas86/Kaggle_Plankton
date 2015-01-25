@@ -7,3 +7,5 @@ sampleSubmission.csv
 *.pdf
 *.zip
 *.pyc
+*.pkl
+*.gv

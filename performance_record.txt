@@ -1,0 +1,11 @@
+randomly guessing (priors.py): 34.229093273226688
+most common prior (priors.py): 32.285603976479813
+arbitrary prior (priors.py): 5.1064016666528929
+uniform prior (priors.py): 4.7957905455967405
+frequency prior (priors.py): 4.1563489118068269
+(tutorial.py): 3.73553339976
+random-prior simple-single-layer 5 epochs of training (single_hidden_layer_net.py): 6.32539264394
+uniform-prior simple-single-layer 5 epochs of training (single_hidden_layer_net.py): 3.7963750255
+	      - parameters: single_hidden_layer_net.pkl
+uniform-prior simple-deep-net 60 epochs of training (deep_net_first_try.py): 3.52609317723
+	      - parameters: deep_net_first_try.pkl
