@@ -1,6 +1,11 @@
 import numpy as np
 from skimage import measure, morphology
 
+
+#########################
+###### TOOLS ############
+#########################
+
 # find the largest nonzero region
 def getLargestRegion(props, labelmap, imagethres):
     regionmaxprop = None
@@ -13,6 +18,31 @@ def getLargestRegion(props, labelmap, imagethres):
         if regionmaxprop.filled_area < regionprop.filled_area:
             regionmaxprop = regionprop
     return regionmaxprop
+
+def pseudoAutocorrelate(image1, image2):
+    image1=image1.flatten()
+    image2=image2.flatten()
+    
+    #Lock values between 0 and 1
+    max_val = np.max(image1)
+    image1 = image1*1.0/max_val
+    image2 = image2*1.0/max_val
+
+    def closeMatch(a, b):
+        div = a/b
+        if((div >.8 and div < 1.2) or (a<0.05 and b<0.05)):
+            return True
+        return False
+
+    result = [1 if closeMatch(image1[i], image2[i]) else 0 for i in range(0, len(image1))]
+    result = np.mean(result)
+
+    return result
+
+
+####################
+#### FEATURES ######
+####################
 
 def getMinorMajorRatio(image):
     image = image.copy()
@@ -36,8 +66,27 @@ def getMinorMajorRatio(image):
         ratio = 0.0 if maxregion is None else  maxregion.minor_axis_length*1.0 / maxregion.major_axis_length
     return ratio
 
+def getHorizontalSymmetryFeature(image):
+    image=image.copy()
+    image2=np.fliplr(image.copy())
+    return pseudoAutocorrelate(image, image2)
+
+def getVerticalSymmetryFeature(image):
+    image=image.copy()
+    image2=np.flipud(image.copy())
+    return pseudoAutocorrelate(image, image2)
+
+def getCircularSymmetryFeature(image):
+    image=image.copy()
+    hs = getHorizontalSymmetryFeature(image)
+    vs = getVerticalSymmetryFeature(image)
+    image2=image.copy().T
+    ds = pseudoAutocorrelate(image, image2)
+    return np.power(hs*vs*ds, 1.0/3)
+
 def getPercentPixelsAboveAverage(image):
     image = image.copy()
     image_threshold = image - np.mean(image)
     over_count = np.where(image_threshold > 0, 1.0, 0.0)
     return np.sum(over_count)/over_count.size
+

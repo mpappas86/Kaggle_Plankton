@@ -1,3 +1,0 @@
-[submodule "mllib"]
-	path = mllib
-	url = https://github.com/whuffman/mllib

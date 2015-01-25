@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 from scipy import ndimage
 from skimage.feature import peak_local_max
-import shape_features as sf
+import Features.shape_features as sf
 import grading
 # make graphics inline
 #%matplotlib inline

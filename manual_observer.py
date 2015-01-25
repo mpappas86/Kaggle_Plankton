@@ -1,81 +1,92 @@
 from skimage.io import imread
 from skimage.transform import resize
-from sklearn.ensemble import RandomForestClassifier as RF
 import glob
 import os
-from sklearn import cross_validation
-from sklearn.cross_validation import StratifiedKFold as KFold
-from sklearn.metrics import classification_report
 from matplotlib import pyplot as plt
-from matplotlib import colors
 from pylab import cm
-from skimage import segmentation, measure, morphology
-from skimage.morphology import watershed
 import numpy as np
-import pandas as pd
-from scipy import ndimage
-from skimage.feature import peak_local_max
-import shape_features as sf
-import grading
 import warnings
 warnings.filterwarnings("ignore")
 
-# get the classnames from the directory structure
-path = '/Users/mikep/Desktop/Kaggle/Plankton'
-directory_names = list(set(glob.glob(os.path.join(path,"train", "*"))\
- ).difference(set(glob.glob(os.path.join(path,"train","*.*")))))
+class ManualObserver():
+    def __init__(self):
+        # get the classnames from the directory structure
+        path = '/Users/mikep/Desktop/Kaggle/Plankton'
+        self.directory_names = list(set(glob.glob(os.path.join(path,"train", "*"))\
+         ).difference(set(glob.glob(os.path.join(path,"train","*.*")))))
+   
+        #get the total training images
+        self.numberofImages = 0
+        for folder in self.directory_names:
+            for fileNameDir in os.walk(folder):   
+                for fileName in fileNameDir[2]:
+                     # Only read in the images
+                    if fileName[-4:] != ".jpg":
+                      continue
+                    self.numberofImages += 1
 
-# Generate training data
-i = 0    
+        self.numRowsAtOnce = 5
+        self.numColumnsAtOnce = 5
+        self.numImagesAtOnce = self.numRowsAtOnce*self.numColumnsAtOnce
 
-#get the total training images
-numberofImages = 0
-for folder in directory_names:
-    for fileNameDir in os.walk(folder):   
-        for fileName in fileNameDir[2]:
-             # Only read in the images
-            if fileName[-4:] != ".jpg":
-              continue
-            numberofImages += 1
+    def preProcessImages(self, image):
+        return resize(image, (25, 25))
 
-#Note that numImages at once must be cleanly divisible by 5 based on the current format.
-numRowsAtOnce = 5
-numColumnsAtOnce = 5
-numImagesAtOnce = numRowsAtOnce*numColumnsAtOnce
-images = [0]*numImagesAtOnce
-nIm = 0
-justShowed = ""
+    def checkOneProcessedImage(self, view=False):
+        print "Grabbing an image"
+        for folder in self.directory_names:
+            for fileNameDir in os.walk(folder):
+                for fileName in fileNameDir[2]:
+                    if fileName[-4:] == ".jpg":
+                        nameFileImage = "{0}{1}{2}".format(fileNameDir[0], os.sep, fileName)
+                        image = imread(nameFileImage, as_grey=True)
+                        if(view):
+                            plt.imshow(image, cmap=cm.Greys_r)
+                            plt.show()
+                        return self.preProcessImages(image)
 
-print "Reading images"
-# Navigate through the list of directories
-for folder in directory_names:
-    # Append the string class name for each class
-    currentClass = folder.split(os.pathsep)[-1]
-    for fileNameDir in os.walk(folder):   
-        for fileName in fileNameDir[2]:
-            # Only read in the images
-            if fileName[-4:] != ".jpg":
-              continue
-            
-            # Read in the images and create the features
-            nameFileImage = "{0}{1}{2}".format(fileNameDir[0], os.sep, fileName)            
-            image = imread(nameFileImage, as_grey=True)
-            if(not justShowed==currentClass):
-                images[nIm] = image
-                nIm += 1
-                if(nIm==numImagesAtOnce):
-                    justShowed = currentClass
-                    nIm = 0
-                    fig, axes = plt.subplots(numRowsAtOnce, numColumnsAtOnce)
-                    axes = axes.ravel()
-                    for j in range(0, numImagesAtOnce):
-                        ax = axes[j]
-                        ax.imshow(images[j], cmap = cm.Greys_r)
-                    fig.suptitle(currentClass)
-                    plt.show()
+    def runThrough(self):
+        print "Reading images"
+        i = 0 
+        images = [0]*self.numImagesAtOnce
+        nIm = 0
+        justShowed = ""
+        # Navigate through the list of directories
+        for folder in self.directory_names:
+            # Append the string class name for each class
+            currentClass = folder.split(os.pathsep)[-1]
+            for fileNameDir in os.walk(folder):   
+                for fileName in fileNameDir[2]:
+                    # Only read in the images
+                    if fileName[-4:] != ".jpg":
+                      continue
+                    
+                    # Read in the images and create the features
+                    nameFileImage = "{0}{1}{2}".format(fileNameDir[0], os.sep, fileName)            
+                    image = self.preProcessImages(imread(nameFileImage, as_grey=True))
+                    if(not justShowed==currentClass):
+                        images[nIm] = image
+                        nIm += 1
+                        if(nIm==self.numImagesAtOnce):
+                            justShowed = currentClass
+                            nIm = 0
+                            fig, axes = plt.subplots(self.numRowsAtOnce, self.numColumnsAtOnce)
+                            axes = axes.ravel()
+                            for j in range(0, self.numImagesAtOnce):
+                                ax = axes[j]
+                                ax.imshow(images[j], cmap = cm.Greys_r)
+                            fig.suptitle(currentClass)
+                            plt.show()
 
 
-            i += 1
-            # report progress for each 5% done  
-            report = [int((j+1)*numberofImages/20.) for j in range(20)]
-            if i in report: print np.ceil(i *100.0 / numberofImages), "% done"
+                    i += 1
+                    # report progress for each 5% done  
+                    report = [int((j+1)*self.numberofImages/20.) for j in range(20)]
+                    if i in report: print np.ceil(i *100.0 / self.numberofImages), "% done"
+
+
+if __name__ == "__main__":
+    mo = ManualObserver()
+    mo.runThrough()
+
+

@@ -1,6 +1,7 @@
 from skimage.io import imread
 from skimage.transform import resize
 import os
+import numpy as np
 np.random.seed(1)
 
 from training_list import classcounts
@@ -26,10 +27,12 @@ for cls in classcounts:
     counter = counter + 1
     print "Importing " + cls[0], str(counter) + " of " + str(len(classcounts))
     label = np.array([x == cls[0] for x in labelnames])
-    filepath = path + "/train/" + cls[0] + "/"
+    filepath = os.path.join(path, "train", cls[0])
     for filename in os.walk(filepath).next()[2]:
+        if filename[-4:] != ".jpg":
+              continue
         # print "reading in ", filepath+filename
-        image = imread(filepath+filename, as_grey=True)
+        image = imread(os.path.join(filepath,filename), as_grey=True)
         rimage = resize(image, (image_height, image_width), order=1, mode="constant", cval=0.0)
         rawdata.append(np.concatenate((rimage.reshape((image_size)),label)))
 rawdata = np.array(rawdata)
@@ -93,6 +96,6 @@ prior_llos = grading.multiclass_log_loss(test_labels.argmax(0), prior_predicted_
 print "Random prior cost after 5 epochs:", random_llos
 print "Uniform prior cost after 5 epochs:", prior_llos
 
-import pickle
-with open(r'single_hidden_layer_net.pkl','w') as f:
-    pickle.dump(weights, f)
+# import pickle
+# with open(r'single_hidden_layer_net.pkl','w') as f:
+#     pickle.dump(weights, f)
