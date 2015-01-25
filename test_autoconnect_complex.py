@@ -55,7 +55,7 @@ with open(r'autoconnect_complex.gv', 'w') as f:
     f.write(gfile)
 
 # generate some data
-data = np.random.rand(input_layer.W.shape[1],5)
+data = np.random.rand(nnet.input_size,5)
 
 # test a forward pass
 nnet.set_buffer_depth(data.shape[1])
@@ -64,7 +64,7 @@ nnet.forward_pass()
 out_data = nnet.retrieve_output()
 
 # generate labels for the data
-labels = (np.random.rand(output_layer.shape[0],data.shape[1]) > 0.5).astype(float)
+labels = (np.random.rand(nnet.output_size,data.shape[1]) > 0.5).astype(float)
 
 # test backpropogation
 # print nnet.cost(data, labels)
@@ -86,7 +86,7 @@ output_layer2.set_lrates(0,0)
 
 nnet.backprop(data, labels)
 gradients = []
-layerset = nnet.get_layerset()
+layerset = nnet.get_ordered_layerset()
 for layer in layerset:
     try:
         gradients.append(np.concatenate((layer.Wgrad.flatten(), layer.bgrad.flatten())))

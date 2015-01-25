@@ -23,15 +23,19 @@ class Net(object):
             output_data[ranges[0],:] = output_node.output_buffer[ranges[1],:]
         return output_data
 
-    def get_layerset(self):
+    def get_ordered_layerset(self):
         layers = set()
         for node in self.nodes:
-            layers.add(node.layer)
+            try:
+                if node.layer.order is not None:
+                    layers.add(node.layer)
+            except:
+                continue
         return sorted(list(layers), key=lambda x: x.order)
     
     def get_weight_vector(self):
         weights = []
-        lset = self.get_layerset()
+        lset = self.get_ordered_layerset()
         for layer in lset:
             tmp = layer.get_weight_vector()
             if not tmp is None:
@@ -40,7 +44,7 @@ class Net(object):
 
     def set_weight_vector(self, weights):
         counter = 0
-        lset = self.get_layerset()
+        lset = self.get_ordered_layerset()
         for layer in lset:
             num_params = layer.get_num_params()
             if not num_params is None:

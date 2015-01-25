@@ -52,7 +52,7 @@ print all([x > 0 for x in a])
 
 # nnet.backprop(data, labels)
 # gradients = []
-# layerset = nnet.get_layerset()
+# layerset = nnet.get_ordered_layerset()
 # for layer in layerset:
 #     gradients.append(np.concatenate((layer.Wgrad.flatten(), layer.bgrad.flatten())))
 # grads = np.concatenate(gradients)
