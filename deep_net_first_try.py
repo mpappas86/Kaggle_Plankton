@@ -35,7 +35,9 @@ for cls in classcounts:
 rawdata = np.array(rawdata)
 np.random.shuffle(rawdata)
 rawdata = rawdata.T
-data = rawdata[:image_size,:]
+rdata = rawdata[:image_size,:]
+mdata = rdata - rdata.mean(1)[:,np.newaxis]
+data = mdata/mdata.std(1)[:,np.newaxis]
 labels = rawdata[image_size:,:]
 
 num_inputs = image_size
@@ -63,8 +65,8 @@ connections = [("input", input_node, num_inputs),
                (output_node, "output", num_outputs)]
 
 gfile = autoconnect(nnet, connections)
-with open(r'deep_net_first_try.gv', 'w') as f:
-    f.write(gfile)
+# with open(r'deep_net_first_try.gv', 'w') as f:
+#     f.write(gfile)
 
 train_index = int(data.shape[1]*0.7)
 valid_index = int(data.shape[1]*0.9)
@@ -98,17 +100,17 @@ llos2 = grading.multiclass_log_loss(test_labels.argmax(0), predicted_labels2.T)
 print "Cost after 5 epochs:", llos
 print "Cost after 10 epochs:", llos2
 
-t3, v3 = nnet.train_mini(train_data, train_labels, mbsize=10, epochs=50, tag="50 more epochs of uniform-prior training ", taginc=100, valid_data=valid_data, valid_labels=valid_labels)
+# t3, v3 = nnet.train_mini(train_data, train_labels, mbsize=10, epochs=50, tag="50 more epochs of uniform-prior training ", taginc=100, valid_data=valid_data, valid_labels=valid_labels)
 
-nnet.set_buffer_depth(test_data.shape[1])
-nnet.input_data(test_data)
-nnet.forward_pass()
-predicted_labels3 = nnet.retrieve_output()
-llos3 = grading.multiclass_log_loss(test_labels.argmax(0), predicted_labels3.T)
+# nnet.set_buffer_depth(test_data.shape[1])
+# nnet.input_data(test_data)
+# nnet.forward_pass()
+# predicted_labels3 = nnet.retrieve_output()
+# llos3 = grading.multiclass_log_loss(test_labels.argmax(0), predicted_labels3.T)
 
-print "Cost after 5 epochs:", llos
-print "Cost after 10 epochs:", llos2
-print "Cost after 60 epochs:", llos3
+# print "Cost after 5 epochs:", llos
+# print "Cost after 10 epochs:", llos2
+# print "Cost after 60 epochs:", llos3
 
 # import pickle
 # with open(r'deep_net_first_try.pkl','w') as f:
