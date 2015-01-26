@@ -72,7 +72,7 @@ valid_labels = labels[:,train_index:valid_index]
 test_data = data[:,valid_index:]
 test_labels = labels[:,valid_index:]
 
-t1, v1 = nnet.train_mini(train_data, train_labels, mbsize=10, epochs=5, tag="5 epochs of random-prior training ", taginc=100, valid_data=valid_data, valid_labels=valid_labels)
+t1, v1 = nnet.train_mini(train_data, train_labels, mbsize=10, epochs=10, tag="5 epochs of random-prior training ", taginc=100, valid_data=valid_data, valid_labels=valid_labels)
 
 nnet.set_buffer_depth(test_data.shape[1])
 nnet.input_data(test_data)
@@ -84,7 +84,7 @@ random_llos = grading.multiclass_log_loss(test_labels.argmax(0), random_predicte
 weights = nnet.get_weight_vector()
 nnet.set_weight_vector(np.random.randn(weights.shape[0])*1e-10)
 
-t1, v1 = nnet.train_mini(train_data, train_labels, mbsize=10, epochs=5, tag="5 epochs of uniform-prior training ", taginc=100, valid_data=valid_data, valid_labels=valid_labels)
+t1, v1 = nnet.train_mini(train_data, train_labels, mbsize=10, epochs=10, tag="5 epochs of uniform-prior training ", taginc=100, valid_data=valid_data, valid_labels=valid_labels)
 
 nnet.set_buffer_depth(test_data.shape[1])
 nnet.input_data(test_data)

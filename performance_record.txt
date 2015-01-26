@@ -9,3 +9,7 @@ uniform-prior simple-single-layer 5 epochs of training (single_hidden_layer_net.
 	      - parameters: single_hidden_layer_net.pkl
 uniform-prior simple-deep-net 60 epochs of training (deep_net_first_try.py): 3.52609317723
 	      - parameters: deep_net_first_try.pkl
+uniform-prior simple-deep-net 60 epochs of training (deep_net_first_try.py): 3.75286986675
+uniform-prior simple-deep-net 60 epochs of training (deep_net_first_try.py): 3.64028685929
+random-prior simple-single-layer 10 epochs of training (single_hidden_layer_net.py): 5.67983755126
+uniform-prior simple-single-layer 10 epochs of training (single_hidden_layer_net.py): 3.68726384026
