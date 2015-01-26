@@ -1,15 +1,18 @@
 from neural_net import Neural_Net
 from neural_node import Neural_Node
-# from neural_layer import Neural_Layer
 from sigmoid_layer import Sigmoid_Layer
-from softmax_layer import Softmax_Layer
 
 nnet = Neural_Net(101,10)
-input_layer = Softmax_Layer(101,37,13.4)
-hidden_layer = Sigmoid_Layer(37,22)
-output_layer = Softmax_Layer(22,10,17.3)
 
-input_node = Neural_Node(input_layer)
+# np.maximum(np.minimum(labels,1-(1e-15)),1e-15)
+nnet.cost_function = lambda x,y: -(y*np.log(np.maximum(np.minimum(x,1-(1e-15)),1e-15))).sum(0)
+nnet.dcost = lambda x,y: -y/np.maximum(np.minimum(x,1-(1e-15)),1e-15)
+
+input_layer = Sigmoid_Layer(101,37)
+hidden_layer = Sigmoid_Layer(37,22)
+output_layer = Sigmoid_Layer(22,10)
+
+input_node = Neural_Node(input_layer, name="Input")
 hidden_node = Neural_Node(hidden_layer)
 output_node = Neural_Node(output_layer)
 

@@ -5,8 +5,8 @@ class Neural_Net(Net):
     def __init__(self, input_size, output_size, cost_function=None, dcost=None):
         super(Neural_Net, self).__init__(input_size, output_size)
         assert((cost_function is None)  == (dcost is None))
-        if(cost_function is None):    
-            self.cost_function = lambda x,y: 0.5*np.sum(((x-y)*(x-y)).flatten())
+        if(cost_function is None):
+            self.cost_function = lambda x,y: 0.5*((x-y)*(x-y)).sum(0)
             self.dcost = lambda x,y: x-y
         else:
             self.cost_function = cost_function
@@ -61,4 +61,4 @@ class Neural_Net(Net):
         self.input_data(data)
         self.forward_pass()
         net_output = self.retrieve_output()
-        return self.cost_function(net_output, target)
+        return self.cost_function(net_output, target).sum()

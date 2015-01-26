@@ -65,7 +65,7 @@ output_layer.set_lrates(0,0)
 
 nnet.backprop(data, labels)
 gradients = []
-layerset = nnet.get_layerset()
+layerset = nnet.get_ordered_layerset()
 for layer in layerset:
     try:
         gradients.append(np.concatenate((layer.Wgrad.flatten(), layer.bgrad.flatten())))
