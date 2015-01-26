@@ -9,3 +9,4 @@ sampleSubmission.csv
 *.pyc
 *.pkl
 *.gv
+*.npy
