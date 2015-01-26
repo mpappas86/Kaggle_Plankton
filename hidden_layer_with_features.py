@@ -4,7 +4,7 @@ import os
 import numpy as np
 np.random.seed(1)
 
-from training_list import classcounts
+from DataReader.training_list import classcounts
 
 from mllib.neural_net import Neural_Net
 from mllib.neural_node import Neural_Node
