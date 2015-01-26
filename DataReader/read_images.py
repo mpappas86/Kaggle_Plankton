@@ -2,6 +2,8 @@ import save_data
 import numpy as np
 
 def read_training(image_width=25, image_height=25):
+  print "Loading Training Data"
+  # This guard lets me evaluate the whole file multiple times in one python run without reading in the data every time
   try:
       len(rawdata)
       assert(rawdata.values()[0][0].shape[0] == image_width)
@@ -19,6 +21,8 @@ def read_training(image_width=25, image_height=25):
   return rawdata
 
 def read_test(image_width=25, image_height=25):
+  print "Loading Test Data"
+  # This guard lets me evaluate the whole file multiple times in one python run without reading in the data every time
   try:
       len(unsupervised)
       assert(unsupervised[0][0].shape[0] == image_width)
