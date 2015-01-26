@@ -2,7 +2,7 @@ from skimage.io import imread
 from skimage.transform import resize
 import numpy as np
 import os
-np.random.seed(2)
+np.random.seed(1)
 
 from training_list import classcounts
 import grading
