@@ -57,7 +57,7 @@ def build(image_size, glrate):
 
   return nnet, gfile
 
-def deploy(rawdata, nnet, num_epochs=10):
+def deploy(rawdata, image_size, nnet, num_epochs=10):
   print "Generating Validation Data"
   svaldata, sflags, iflags = select_subset(rawdata, 5, [0.7, 0.8])
   valdata = svaldata[:image_size,:]
