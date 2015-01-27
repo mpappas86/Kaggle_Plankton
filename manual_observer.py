@@ -1,12 +1,18 @@
+import matplotlib
+matplotlib.use('Agg')
 from skimage.io import imread
 from skimage.transform import resize
 import glob
 import os
 from matplotlib import pyplot as plt
-from pylab import cm
+from pylab import cm, savefig
 import numpy as np
 import warnings
 warnings.filterwarnings("ignore")
+
+#WARNING - PNGs are currently saved to the individual class dirs rather than ClassImages due to a bug.
+#currentClass is actually the full path to the class folder, not the class name.
+#I could fix this but frankly am too annoyed at this right now to bother...
 
 class ManualObserver():
     def __init__(self):
@@ -76,7 +82,9 @@ class ManualObserver():
                                 ax = axes[j]
                                 ax.imshow(images[j], cmap = cm.Greys_r)
                             fig.suptitle(currentClass)
-                            plt.show()
+                            curdir = os.path.dirname(os.path.realpath(__file__))
+                            fig.savefig(os.path.join(curdir, "ClassImages", "{0}.png".format(currentClass)))
+                            #plt.show()
 
 
                     i += 1

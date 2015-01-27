@@ -1,5 +1,6 @@
 import numpy as np
 from skimage import measure, morphology
+import os
 
 
 #########################
@@ -43,6 +44,20 @@ def pseudoAutocorrelate(image1, image2):
 ####################
 #### FEATURES ######
 ####################
+
+
+def getCompressionRatio(image):
+    tmp_file_uncompressed = "tmp.npz"
+    tmp_file_compressed = "tmp2.npz"
+    try:
+        np.savez(tmp_file_uncompressed, image)
+        np.savez_compressed(tmp_file_compressed, image)
+        uc_size = os.path.getsize(tmp_file_uncompressed)
+        c_size = os.path.getsize(tmp_file_compressed)
+    finally:
+        os.remove(tmp_file_compressed)
+        os.remove(tmp_file_uncompressed)
+    return 1.0*c_size/uc_size
 
 def getMinorMajorRatio(image):
     image = image.copy()
