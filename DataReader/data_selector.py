@@ -1,8 +1,10 @@
 import numpy as np
 np.random.seed(1)
 from gen_synthetic import transform_images
+from training_list import classcounts
 
 def select_subset(alldata, desired_samples = 500, percent_range = [0,1], include_synthetic=True):
+    labelnames = [x[0] for x in classcounts]
     ret = []
     samples_flag = [True]
     index_flag = [True]

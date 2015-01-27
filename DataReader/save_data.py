@@ -10,7 +10,7 @@ class DataLoader():
     def __init__(self, image_width=25, image_height=25):
         self.image_height=image_height
         self.image_width=image_width
-        self.path = os.path.abspath(os.path.dirname(os.getcwd()))
+        self.path = os.path.abspath(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
         np.random.seed(1)
 
     def read_test_data(self):
