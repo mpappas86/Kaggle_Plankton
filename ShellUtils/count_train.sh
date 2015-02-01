@@ -1,7 +1,7 @@
 #!/bin/bash
 
-rm training_list.py
-touch training_list.py
+rm DataReader/training_list.py
+touch DataReader/training_list.py
 
 echo "classcounts = [begin_marker" >> training_list.py
 for dr in $(ls train); do
