@@ -2,7 +2,7 @@ import numpy as np
 from skimage import measure, morphology
 import os
 from feature_tools import getLargestRegion, pseudoAutocorrelate, getWhitespaceTrimmed
-from annotation import *
+from annotations import *
 
 @SHAPE
 def getHeightFeature(image):

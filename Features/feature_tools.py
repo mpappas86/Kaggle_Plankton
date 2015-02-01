@@ -1,5 +1,15 @@
 import numpy as np
 import os
+from annotations import *
+
+def getFeatures(annotation_list=[]):
+    if annotation_list==[]:
+        annotation_list=ALL
+    features = set()
+    feature_vals = []
+    for a in annotation_list:
+        features = features.union(set(a.all.values()))
+    return features
 
 def getWhitespaceTrimmed(image):
     newimage = None

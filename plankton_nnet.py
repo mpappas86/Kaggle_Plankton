@@ -6,5 +6,5 @@ from mllib import deploy_nnet
 def build(image_size, glrate=0.01):
   return deploy_nnet.build(image_size, glrate)
 
-def deploy(rawdata, image_size, nnet, num_epochs=10):
-  deploy_nnet.deploy(rawdata, image_size, nnet, num_epochs)
+def deploy(rawdata, image_size, nnet, num_epochs=10, feature_list=None):
+  deploy_nnet.deploy(rawdata, image_size, nnet, num_epochs, feature_list)

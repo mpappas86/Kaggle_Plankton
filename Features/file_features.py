@@ -2,7 +2,7 @@ import numpy as np
 from skimage import measure, morphology
 import os
 from feature_tools import getLargestRegion, pseudoAutocorrelate
-from annotation import *
+from annotations import *
 
 @FILE
 @MULT
