@@ -57,25 +57,30 @@ def build(image_size, glrate):
 
   return nnet, gfile
 
-def augment_with_features(data, feature_list):
+def augment_with_features(data, feature_list, image_shape):
   if feature_list is None:
     return data
   else:
+    image_size=image_shape[0]*image_shape[1]
+    image_height=image_shape[0]
+    image_width=image_shape[1]
     augmented_data = np.empty((data.shape[0], image_size + len(feature_list)))
     for row, new_row in zip(data, augmented_data):
       new_row[:image_size] = row
       new_row[image_size:] = [feature_list[i](row.reshape(image_width, image_height)) for i in range(0, len(feature_list))]
     return augmented_data
 
-def deploy(rawdata, image_size, nnet, num_epochs=10, feature_list=None):
+def deploy(rawdata, image_shape, nnet, num_epochs=10, feature_list=None):
+  image_size = image_shape[0]*image_shape[1]
+
   print "Generating Validation Data"
   svaldata, sflags, iflags = select_subset(rawdata, 5, [0.7, 0.8])
-  valdata = augment_with_features(svaldata[:image_size,:], feature_list)
+  valdata = augment_with_features(svaldata[:image_size,:], feature_list, image_shape)
   vallabels = svaldata[image_size:,:]
 
   print "Generating Test Data"
   stestdata, sflags, iflags = select_subset(rawdata, 100, [0.8,1])
-  testdata = augment_with_features(stestdata[:image_size,:], feature_list)
+  testdata = augment_with_features(stestdata[:image_size,:], feature_list, image_shape)
   testlabels = stestdata[image_size:,:]
 
   ts = []
@@ -87,7 +92,7 @@ def deploy(rawdata, image_size, nnet, num_epochs=10, feature_list=None):
   for epoch in xrange(num_epochs):
       print "Epoch "+str(epoch)
       seldata, sflags, iflags = select_subset(rawdata,480,[0,0.7])
-      data = augment_with_features(seldata[:image_size,:], feature_list)
+      data = augment_with_features(seldata[:image_size,:], feature_list, image_shape)
       labels = seldata[image_size:,:]
       
       ttemp, vtemp = nnet.train_mini(data, labels, mbsize=100, epochs=1, tag="Epoch "+str(epoch)+" ", taginc=100, valid_data=valdata, valid_labels=vallabels)
