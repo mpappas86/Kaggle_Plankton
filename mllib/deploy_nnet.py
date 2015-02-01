@@ -57,15 +57,25 @@ def build(image_size, glrate):
 
   return nnet, gfile
 
-def deploy(rawdata, image_size, nnet, num_epochs=10):
+def augment_with_features(data, feature_list):
+  if feature_list is None:
+    return data
+  else:
+    augmented_data = np.empty((data.shape[0], image_size + len(feature_list)))
+    for row, new_row in zip(data, augmented_data):
+      new_row[:image_size] = row
+      new_row[image_size:] = [feature_list[i](row.reshape(image_width, image_height)) for i in range(0, len(feature_list))]
+    return augmented_data
+
+def deploy(rawdata, image_size, nnet, num_epochs=10, feature_list=None):
   print "Generating Validation Data"
   svaldata, sflags, iflags = select_subset(rawdata, 5, [0.7, 0.8])
-  valdata = svaldata[:image_size,:]
+  valdata = augment_with_features(svaldata[:image_size,:], feature_list)
   vallabels = svaldata[image_size:,:]
 
   print "Generating Test Data"
   stestdata, sflags, iflags = select_subset(rawdata, 100, [0.8,1])
-  testdata = stestdata[:image_size,:]
+  testdata = augment_with_features(stestdata[:image_size,:], feature_list)
   testlabels = stestdata[image_size:,:]
 
   ts = []
@@ -77,7 +87,7 @@ def deploy(rawdata, image_size, nnet, num_epochs=10):
   for epoch in xrange(num_epochs):
       print "Epoch "+str(epoch)
       seldata, sflags, iflags = select_subset(rawdata,480,[0,0.7])
-      data = seldata[:image_size,:]
+      data = augment_with_features(seldata[:image_size,:], feature_list)
       labels = seldata[image_size:,:]
       
       ttemp, vtemp = nnet.train_mini(data, labels, mbsize=100, epochs=1, tag="Epoch "+str(epoch)+" ", taginc=100, valid_data=valdata, valid_labels=vallabels)
