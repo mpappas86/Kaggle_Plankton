@@ -12,4 +12,4 @@ rawdata = read_training(image_width, image_height)
 
 nnet, gfile = plankton_nnet.build(image_size, glrate=0.01)
 
-plankton_nnet.deploy(rawdata, image_size, nnet)
+plankton_nnet.deploy(rawdata, (image_height, image_width), nnet)
