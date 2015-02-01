@@ -1,0 +1,166 @@
+Plankton
+    Protist
+        Acantharia_Protist
+            acantharia_protist: Small black core with (typically 8) thin legs coming out roughly symmetrically
+            acantharia_protist_big_center: Larger center, often more legs
+            acantharia_protist_halo: Legs have a circle connecting each of their ends. Existence of halo trumps big center.
+        protist_noctiluca: Fucking Lorenz attractor...looks like a bean with a thick outline, usually a dark center, sometimes spirals in from the outline to the center
+        Protist_Other
+            protist_other: Other things that are roughly circular with some centers and legs?
+            protist_star: acantharia_protist_halo, but halo is star-shaped rather than circular.
+            protist_fuzzy_olive: center, legs, halo, but oval shaped
+            protist_dark_center: closer to a single blob, big center but also actually dark
+        Radiolarian_Colony
+            radiolarian_colony: Variety of shapes, many tiny bubbles inside main form. HAS AN OUTLINE.
+            radiolarian_chain: String of bubbles. No outline.
+    Trichodesmium
+        trichodesmium_tuft: Single dark splotch, line-like
+        trichodesmium_bowtie: Single dark splotch, ends are larger than center
+        trichodesmium_puff: Single dark splotch, roughly circular
+        trichodesmium_multiple: Multiple dark splotches, usually but not always circular, usually but not always with some overlap.
+    Diatom
+        diatom_chain_string: Typically thinner than the tube and less bubble-y
+        diatom_chain_tube: VERY LINEAR string of bubbles
+    Gelatinous_Zooplankton
+        jellies_tentacles: Usually multiple, always linear objects. Some have period bulges along the tentacle.
+        Pelagic_Tunicate
+            Appendicularian
+                appendicularian_fritillaridae: Large dark splotch with a hook coming out - like a mushroom with the stalk curving back up
+                appendicularian_s_shape: Mushroom (often smaller head) whose stalk waves sinusoidally but in one main direction
+                appendicularian_slight_curve: Mushroom with slight single curve - never turns around.
+                appendicularian_straight: Mushroom with straight stalk.
+            Tunicate
+                Tunicate_Doliolid
+                    tunicate_doliolid: Something like the underside of a beetle...oval shaped, filled in but often with lines across the center. Might be badly taken pictures of something shaped like a wristband, actually...hard to tell.
+                    tunicate_doliolid_nurse: The above, but with a huge (2-3 times the body's size) tail coming off the back. Tail is shaped like a fern - lots of little leaves coming off each side.
+                Tunicate_Salp
+                    tunicate_salp: Similar to doliolid, but more nut-shaped or even linear, rather than ovular.
+                    tunicate_salp_chains: Either a bunch of the above slightly overlapping, or a spine-shaped thing that's pretty linear.
+                tunicate_partial: Doliolid or Salp (no nurse/chain) that's cut off in the image.
+        Siphonophore
+            Calycophoran_Siphonophore
+                siphonophore_calycophoran_abylidae: Tough to describe (wombat-like?) but basically an angular amoeba that's partially filled in.
+                Calycophoran_Siphonophore_Rocketship
+                    siphonophore_calycophoran_rocketship_adult:Rocketship shape (oval that's pinched on one end and flatish on the other) with tail coming off flat end.
+                    siphonophore_calycophoran_rocketship_young: Thicker outline, longer tail? Not much obviously different...
+                Calycophoran_Siphonophore_Sphaeronectes
+                    siphonophore_calycophoran_sphaeronectes: Circle with smaller circle mostly or totally overlapping. Smaller circle often has one end flattened.
+                    siphonophore_calycophoran_sphaeronectes_young: Overlapping circles much more separate, occasionally with tail.
+                    siphonophore_calycophoran_sphaeronectes_stem: Normal sphaeronectes with tail.
+            Siphonophore_Physonect
+                siphonophore_physonect: Chain about half made of popcorn-ish bubbles (less circular/regular than normal bubbles) and with the back half being thinner and with less substructure.
+                siphonophore_physonect_young: Only a few popcorn bubbles and then a much longer thin tail.
+            siphonophore_other_parts: ? Maybe use as catchal...often rocketship-head-like, but hard to say what is different.
+            siphonophore_partial: Partial rocketship or summat...
+        ephyra: Highly symmetric sun-shaped (circular with something between bubbles and spokes around the edge, around 20 of them.)
+        Hydromedusae
+            Hydromedusae_Narcomedusae
+                hydromedusae_narcomedusae: Depending on angle, either highly symmetrical flower face (at an angle) or circle with several long legs coming off it.
+                hydromedusae_narco_dark: The above, but darker. Is that really biologically relevant?
+                Hydromedusae_Solmaris
+                    hydromedusae_solmaris: More jellyfilsh like - head is shaped like a fishbowl with legs dangling off. Typically more legs than narcomedusae.
+                    hydromedusae_narco_young: Not really sure, but seems like legs tend to be bundled together to the two sides rather than all spread out?
+                hydromedusae_solmundella
+                hydromedusae_aglaura: Small, squarish body with many very thin legs. Spread wide rather than directioned.
+                hydromedusae_liriope: Large body, often with two rocketship heads inside it, and several legs. All angled to one direction.
+                Hydromedusae_Haliscera
+                    hydromedusae_haliscera: Very big circular body with internal spokes and very many, very small legs.
+                    hydromedusae_haliscera_small_sideview: Hemisphere shaped, often still with visible spokes.
+                Other_Hydromedusae
+                    Hydromedusae_Type_D_Bell_And_Tentacles
+                        hydromedusae_bell_and_tentacles: Mostly many thin, directioned tentacles, and then a bell at the end.
+                        hydromedusae_typeD_bell_and_tentacles: About 60% of image or more is roughly horizontal, thin, many tentacles. Also very clear squashed bell shape - bell always at right of image.
+                        hydromedusae_typeD: Big dark outlined circular body with large, pure black center and many internal spokes.
+                    Hydromedusae_Shape_A_Sideview
+                        hydromedusae_shapeA: Very large, mostly empty circle witha couple (often 4 or 5) clearly defined internal spokes.
+                        hydromedusae_shapeA_sideview_small: Pretty much just the bell. No real view of legs.
+                        hydromedusae_sideview_big: Big squashed bell, legs minimally visible.
+                    hydromedusae_typeE: Very dark, almost flattened bell with short legs coming off the top of the bell.
+                    hydromedusae_shapeB: D shaped heads, often with a line horizontally through the middle of the D. Usually legs in one of two bundles.
+                    hydromedusae_typeF: Almost completely filled in, bullet or cone shaped.
+                    hydromedusae_h15: Bell almost always at left, legs take up most of picture, usually in only one or two tight bundles.
+                    hydromedusae_other: Other jellyfilsh.
+                    hydromedusae_partial_dark: Partial with very clear outlines.
+        Ctenophore
+            ctenophore_cestid: Wavy band-aid shape with a line down the middle the long way.
+            ctenophore_cydippid_tentacles: Squashed circular body with a line from the top (non-squashed side) down about 2/3 of the way. Then two tentacles coming off the two sides of the flattened bottom.
+            ctenophore_cydippid_no_tentacles: Above without tentacles.
+            ctenophore_lobate: Really big, dark grey circular thing...
+    chordate_type1: Black pickle shaped. Occsaionally slightly bumpy on one side.
+    Fish
+        fish_larvae_leptocephali
+        fish_larvae_myctophids
+        fish_larvae_very_thin_body
+        fish_larvae_thin_body
+        fish_larvae_medium_body
+        fish_larvae_deep_body
+    Crustacean
+        crustacean_other
+        Copepod
+            Cyclopoid_Copepod
+                Cyclopoid_Copepod_Oithona
+                    copepod_cyclopoid_oithona
+                    copepod_cyclopoid_oithona_eggs
+                copepod_cyclopoid_copilia
+            Copepod_Calnoid
+                copepod_calanoid
+                copepod_calanoid_small_longantennae
+                copepod_calanoid_frillyAntennae
+                copepod_calanoid_flatheads
+                copepod_calanoid_eggs
+                copepod_calanoid_octomoms
+                Copepod_Calanoid_Large
+                    copepod_calanoid_large
+                    copepod_calanoid_large_side_antennatucked
+                copepod_calanoid_eucalanus
+                copepod_other
+        stomatopod
+        amphipods
+        Shrimp-like
+            shrimp-like_other
+            Euphauslid
+                euphausiids
+                euphausiids_young
+            Decapod
+                decapods
+                shrimp_zoea
+                shrimp_caridean
+                shrimp_sergestidae
+    Chaetognath
+        chaetognath_sagitta
+        chaetognath_non_sagitta
+        chaetognath_other
+    polychaete
+    Gastropod
+        heteropod
+        Pteropod
+            pteropod_butterfly
+            pteropod_triangle
+            pteropod_theco_dev_seq
+    Other_Invert_Larvae
+        trochophore_larvae
+        Echinoderm
+            Echinoderm_Larva_Seastar
+                echinoderm_larva_seastar_bipinnaria
+                echinoderm_larva_seastar_brachiolaria
+            echinoderm_larva_pluteus_early
+            echinoderm_larva_pluteus_urchin
+            echinoderm_larva_pluteus_typeC
+            echinoderm_larva_pluteus_brittlestar
+            echinopluteus
+            echinoderm_seacucumber_auricularia_larva
+        tornaria_acorn_worm_larvae
+        invertebrate_larvae_other_A
+        invertebrate_larvae_other_B
+    Detritus
+        fecal_pellet
+        detritus_blob
+        detritus_filamentous
+        detritus_other
+    Unknown
+        unknown_blobs_and_smudges
+        unknown_sticks
+        unknown_unclassified
+Artifact
+    artifacts
+    artifacts_edge
