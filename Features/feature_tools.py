@@ -52,6 +52,8 @@ def pseudoAutocorrelate(image1, image2):
     image2 = image2*1.0/max_val
 
     def closeMatch(a, b):
+        if(b==0):
+            return a<0.05
         div = a/b
         if((div >.8 and div < 1.2) or (a<0.05 and b<0.05)):
             return True
