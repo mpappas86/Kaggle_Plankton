@@ -44,8 +44,8 @@ class Neural_Net(Net):
         return rcerror, verror
     
     def backprop(self, data, target):
-        self.input_data(data)
-        self.forward_pass()
+        self.training_input_data(data)
+        self.training_forward_pass()
         net_output = self.retrieve_output()
         self.zero_buffers()
         output_data = self.dcost(net_output, target)

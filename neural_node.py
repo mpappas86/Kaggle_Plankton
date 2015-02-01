@@ -16,7 +16,7 @@ class Neural_Node(Net_Node):
         if not self.upstream_checkin == len(self.outputs):
             return
         self.upstream_checkin = 0
-        self.input_buffer = self.layer.backprop(self.output_buffer, self)
+        self.input_buffer[self.dropout_in,:] = self.layer.backprop(self.output_buffer, self.dropout_in, self.dropout_array self)
         for input_node, input_range in self.inputs.iteritems():
             input_node.take_upstream(self.input_buffer[input_range,:], self)
             input_node.push_downstream()
