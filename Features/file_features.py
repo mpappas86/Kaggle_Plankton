@@ -32,5 +32,5 @@ def getImageFileLengthFeature(image):
 def getImageFileMinorMajorRatioFeature(image):
     h = image.shape[0]
     l = image.shape[1]
-    return np.min(l, h)*1.0/np.max(l, h)
+    return np.min([l, h])*1.0/np.max([l, h])
 

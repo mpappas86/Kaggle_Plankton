@@ -20,7 +20,7 @@ def getMinorMajorRatioFeature(image):
     image = image.copy()
     h = getHeightFeature(image)
     l = getLengthFeature(image)
-    return np.min(l, h)*1.0/np.max(l, h)
+    return np.min([l, h])*1.0/np.max([l, h])
 
 @SHAPE
 def getHorizontalSymmetryFeature(image):
