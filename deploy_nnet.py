@@ -65,8 +65,8 @@ def augment_with_features(data, feature_list, image_shape):
     image_height=image_shape[0]
     image_width=image_shape[1]
     feature_list=list(feature_list)
-    augmented_data = np.empty((data.shape[0], image_size + len(feature_list)))
-    for row, new_row in zip(data.T, augmented_data):
+    augmented_data = np.empty((image_size + len(feature_list), data.shape[1]))
+    for row, new_row in zip(data.T, augmented_data.T):
       new_row[:image_size] = row
       new_row[image_size:] = [feature_list[i](row.reshape(image_width, image_height)) for i in range(0, len(feature_list))]
     return augmented_data
