@@ -84,11 +84,11 @@ class Net_Node(object):
         if not self.latch_step:
             self.latch_input()
         if self.p is not None:
-            self.dropout_array = np.random.rand(self.dropout_array.shape) < self.p
+            self.dropout_array = np.random.rand(self.dropout_array.shape[0]) < self.p
         else:
             self.dropout_array = np.ones(self.dropout_array.shape,dtype=bool)
         # Calculate the output of this node
-        self.output_buffer = self.layer.training_predict(self.true_input, self.dropout_in, self.dropout_array, self)
+        self.output_buffer[self.dropout_array,:] = self.layer.training_predict(self.true_input, self.dropout_in, self.dropout_array, self)
         # Push the output to all of the nodes depending on this node for input
         for output_node, output_range in self.outputs.iteritems():
             output_node.training_take_input(self.output_buffer[output_range,:], self.dropout_array[output_range], self)

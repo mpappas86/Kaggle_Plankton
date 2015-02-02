@@ -21,7 +21,7 @@ class Sigmoid_Layer(Neural_Layer):
 
     def training_predict(self, data, dropout_in, dropout_array, node):
         self.batch_size = float(data.shape[1])
-        node.dataup = data[dropout_in,:]
+        node.dataup = copy.copy(data[dropout_in,:])
         ii = np.where(dropout_in)[0]
         oi = np.where(dropout_array)[0][:,np.newaxis]
         node.savedup = self.f(self.W[oi,ii].dot(node.dataup)+self.b[dropout_array])
