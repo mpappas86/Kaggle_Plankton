@@ -94,6 +94,23 @@ class Net_Node(object):
             output_node.training_take_input(self.output_buffer[output_range,:], self.dropout_array[output_range], self)
             # If this node was the last input to check in, the output layer will now push its output
             output_node.training_push_output()
+            
+    def check_push_output(self):
+        # If all of the inputs have checked in and pushed their input to this node's buffer, then continue
+        if not self.input_checkin == len(self.inputs):
+            return
+        # reset for next push
+        self.input_checkin = 0
+        # If we want the input to flow through the node in one step, go ahead and latch the input buffer to the true input before running the calculation
+        if not self.latch_step:
+            self.latch_input()
+        # Calculate the output of this node
+        self.output_buffer[self.dropout_array,:] = self.layer.training_predict(self.true_input, self.dropout_in, self.dropout_array, self)
+        # Push the output to all of the nodes depending on this node for input
+        for output_node, output_range in self.outputs.iteritems():
+            output_node.training_take_input(self.output_buffer[output_range,:], self.dropout_array[output_range], self)
+            # If this node was the last input to check in, the output layer will now push its output
+            output_node.check_push_output()
 
     def set_buffer_depth(self, depth):
         self.input_buffer = np.zeros((self.layer.shape[1],depth))

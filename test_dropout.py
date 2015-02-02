@@ -9,7 +9,7 @@ import numpy as np
 nnet = Neural_Net(101, 10, p=0.8)
 input_layer = Sigmoid_Layer(101,37)
 hidden_layer = Sigmoid_Layer(37,22,2)
-output_layer = Softmax_Layer(22,10,1)
+output_layer = Sigmoid_Layer(22,10,1)
 
 input_node = Neural_Node(input_layer, name="Input", p=0.7)
 hidden_node = Neural_Node(hidden_layer, name="Hidden", p=0.9)
@@ -68,10 +68,10 @@ for index in xrange(len(weights)):
     new_weights = copy.copy(weights)
     new_weights[index] = weights[index] + epsilon
     nnet.set_weight_vector(new_weights)
-    cost_up = nnet.cost(data, labels)
+    cost_up = nnet.check_cost(data, labels)
     new_weights[index] = weights[index] - epsilon
     nnet.set_weight_vector(new_weights)
-    cost_down = nnet.cost(data, labels)
+    cost_down = nnet.check_cost(data, labels)
     gradient_test.append((cost_up - cost_down)/(2.0*epsilon))
     # if index % 100 == 0:
     #     print index, len(weights)

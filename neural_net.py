@@ -62,3 +62,9 @@ class Neural_Net(Net):
         self.forward_pass()
         net_output = self.retrieve_output()
         return self.cost_function(net_output, target).sum()
+
+    def check_cost(self, data, target):
+        self.input_data(data)
+        self.check_forward_pass()
+        net_output = self.retrieve_output()
+        return self.cost_function(net_output, target).sum()

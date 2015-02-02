@@ -87,6 +87,13 @@ class Net(object):
         for node in self.nodes:
             if node.latch_step:
                 node.latch_input()
+
+    def check_forward_pass(self):
+        for node in self.inputs.keys():
+            node.check_push_output()
+        for node in self.nodes:
+            if node.latch_step:
+                node.latch_input()
                 
     def set_buffer_depth(self, depth):
         self.depth = depth
