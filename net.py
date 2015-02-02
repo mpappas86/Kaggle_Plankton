@@ -34,13 +34,13 @@ class Net(object):
             output_data[ranges[0],:] = output_node.output_buffer[ranges[1],:]
         return output_data
 
-    def global_setp(self, p=0):
-        if p is not None and p <= 0:
-            p = self.p
-        for node in self.nodes:
-            node.setp(p)
-        for node in self.outputs.keys():
-            node.setp(None)
+    # def global_setp(self, p=0):
+    #     if p is not None and p <= 0:
+    #         p = self.p
+    #     for node in self.nodes:
+    #         node.setp(p)
+    #     for node in self.outputs.keys():
+    #         node.setp(None)
 
     def get_ordered_layerset(self):
         layers = set()

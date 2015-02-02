@@ -27,8 +27,8 @@ class Neural_Layer(Layer):
         self.Wgrad[oi,ii] += delta.dot(node.dataup.T)
         self.bgrad[dropout_array] += delta.sum(1)[:,np.newaxis]
         self.updated_yet = False
-        # node.savedup = None
-        # node.dataup = None
+        node.savedup = None
+        node.dataup = None
         return self.W[oi,ii].T.dot(delta)
 
     def update_weights(self):

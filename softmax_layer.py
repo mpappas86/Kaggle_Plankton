@@ -37,11 +37,23 @@ class Softmax_Layer(Neural_Layer):
             delta[:,col] = self.df(savedup[:,col]).dot(upstream[:,col])
         return delta
     
-    def backprop(self, upstream, node):
-        delta = self.gen_delta(upstream, node.savedup)
-        self.Wgrad += delta.dot(node.dataup.T)
-        self.bgrad += delta.sum(1)[:,np.newaxis]
+    # def backprop(self, upstream, node):
+    #     delta = self.gen_delta(upstream, node.savedup)
+    #     self.Wgrad += delta.dot(node.dataup.T)
+    #     self.bgrad += delta.sum(1)[:,np.newaxis]
+    #     self.updated_yet = False
+    #     node.savedup = None
+    #     node.dataup = None
+    #     return self.W.T.dot(delta)
+
+    def backprop(self, upstream, dropout_in, dropout_array, node):
+        # delta = self.df(node.savedup)*upstream[dropout_array,:]
+        delta = self.gen_delta(upstream[dropout_array,:], node.savedup)
+        ii = np.where(dropout_in)[0]
+        oi = np.where(dropout_array)[0][:,np.newaxis]
+        self.Wgrad[oi,ii] += delta.dot(node.dataup.T)
+        self.bgrad[dropout_array] += delta.sum(1)[:,np.newaxis]
         self.updated_yet = False
         node.savedup = None
         node.dataup = None
-        return self.W.T.dot(delta)
+        return self.W[oi,ii].T.dot(delta)
