@@ -12,21 +12,21 @@ class Net(object):
         self.outputs = {}
         self.depth = 0
         self.p = p
-        self.dropout_array = np.ones(input_size,dtype=bool)
+        self.dropout_array = np.ones(self.input_size,dtype=bool)
 
     # self.inputs is a mapping from <input_nodes> to <range of the input data vector that they should take as inputs>.  Unlike all other nodes, input nodes take all of their input from one source - the user.  This function puts the correct portion of the user's data into each input node
     def input_data(self, data):
         for input_node, ranges in self.inputs.iteritems():
             input_node.input_buffer[ranges[1],:] = data[ranges[0], :]
 
-    def trainig_input_data(self, data):
-        if p is not None:
-            self.dropout_array = np.random.rand(input_size) < self.p
+    def training_input_data(self, data):
+        if self.p is not None:
+            self.dropout_array = np.random.rand(self.input_size) < self.p
         else:
-            self.dropout_array = np.ones(input_size,dtype=bool)
+            self.dropout_array = np.ones(self.input_size,dtype=bool)
         for input_node, ranges in self.inputs.iteritems():
             input_node.input_buffer[ranges[1],:] = data[ranges[0], :]
-            input_node.dropout_array[ranges[1]] = self.dropout_array[ranges[0]]
+            input_node.dropout_in[ranges[1]] = self.dropout_array[ranges[0]]
 
     def retrieve_output(self):
         output_data = np.zeros((self.output_size,self.depth))

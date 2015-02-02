@@ -5,6 +5,8 @@ from sigmoid_layer import Sigmoid_Layer
 from maxpool_layer import Maxpool_Layer
 from autoconnect import autoconnect
 
+import numpy as np
+
 nnet = Neural_Net(101,10)
 input_layer1 = Sigmoid_Layer(25,15)
 input_layer2 = Sigmoid_Layer(51,14)
@@ -68,14 +70,13 @@ labels = (np.random.rand(nnet.output_size,data.shape[1]) > 0.5).astype(float)
 
 # test backpropogation
 # print nnet.cost(data, labels)
-# costs = [nnet.cost(data, labels)]
-# for x in xrange(100):
-#     nnet.backprop(data, labels)
-#     print nnet.cost(data, labels)
-#     costs.append(nnet.cost(data, labels))
+costs = [nnet.cost(data, labels)]
+for x in xrange(100):
+    nnet.backprop(data, labels)
+    costs.append(nnet.cost(data, labels))
 
-# a = [x-y for x,y in zip(costs[0:(len(costs)-1)],costs[1:len(costs)])]
-# print all([x > 0 for x in a])
+a = [x-y for x,y in zip(costs[0:(len(costs)-1)],costs[1:len(costs)])]
+backprop_test = all([x > 0 for x in a])
 
 # gradient check
 input_layer1.set_lrates(0,0)
@@ -107,10 +108,11 @@ for index in xrange(len(weights)):
     nnet.set_weight_vector(new_weights)
     cost_down = nnet.cost(data, labels)
     gradient_test.append((cost_up - cost_down)/(2.0*epsilon))
-    if index % 100 == 0:
-        print index, len(weights)
+    # if index % 100 == 0:
+    #     print index, len(weights)
 grad_test = np.array(gradient_test)
 
 errors = np.abs(grads - grad_test)
-print np.mean(errors)
-print np.max(errors)
+
+grad_test_mean = np.mean(errors)
+grad_test_max = np.max(errors)

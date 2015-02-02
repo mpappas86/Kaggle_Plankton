@@ -3,19 +3,27 @@ import copy
 from neural_layer import Neural_Layer
 
 class Softmax_Layer(Neural_Layer):
-    def __init__(self, input_size, output_size, temperature):
-        super(Softmax_Layer, self).__init__(input_size, output_size)
+    def __init__(self, input_size, output_size, temperature, order=None):
+        super(Softmax_Layer, self).__init__(input_size, output_size, order=order)
         self.temperature = temperature
         self.f = self.softmax
         self.df = self.dsoftmax
 
     # Each row of the data is a feature, and each column is a sample
-    def predict(self, data, node):
-        self.batch_size = float(data.shape[1])
-        node.dataup = data
-        node.savedup = self.f(self.W.dot(node.dataup)+self.b)
-        return copy.copy(node.savedup)
+    # def predict(self, data, node):
+    #     self.batch_size = float(data.shape[1])
+    #     node.dataup = data
+    #     node.savedup = self.f(self.W.dot(node.dataup)+self.b)
+    #     return copy.copy(node.savedup)
 
+    def training_predict(self, data, dropout_in, dropout_array, node):
+        self.batch_size = float(data.shape[1])
+        node.dataup = data[dropout_in,:]
+        ii = np.where(dropout_in)[0]
+        oi = np.where(dropout_array)[0][:,np.newaxis]
+        node.savedup = self.f(self.W[oi,ii].dot(node.dataup)+self.b[dropout_array])
+        return copy.copy(node.savedup)
+    
     def softmax(self, data):
         tmp = np.exp(data / self.temperature)
         return tmp / tmp.sum(0)
