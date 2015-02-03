@@ -28,7 +28,12 @@ class Layer(object):
         
     def predict(self, data, node):
         return self.f(self.W.dot(data)+self.b)
-
+    
+    def training_predict(self, data, dropout_in, dropout_array, node):
+        ii = np.where(dropout_in)[0]
+        oi = np.where(dropout_array)[0][:,np.newaxis]
+        return self.f(self.W[oi,ii].dot(data[dropout_in,:])+self.b[dropout_array,:])
+    
     def get_num_params(self):
         return np.size(self.W)+np.size(self.b)
     
