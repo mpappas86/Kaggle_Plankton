@@ -6,31 +6,37 @@ from annotations import *
 
 @FILE
 @MULT
-def getCompressionRatioFeature(image):
+def getCompressionRatioFeature(images):
     tmp_file_uncompressed = "tmp.npz"
     tmp_file_compressed = "tmp2.npz"
-    try:
-        np.savez(tmp_file_uncompressed, image)
-        np.savez_compressed(tmp_file_compressed, image)
-        uc_size = os.path.getsize(tmp_file_uncompressed)
-        c_size = os.path.getsize(tmp_file_compressed)
-    finally:
-        os.remove(tmp_file_compressed)
-        os.remove(tmp_file_uncompressed)
-    return 1.0*c_size/uc_size
+    feature_vals = []
+    for i in xrange(images.shape[2]):
+        try:
+            image = images[:,:,i]
+            np.savez(tmp_file_uncompressed, image)
+            np.savez_compressed(tmp_file_compressed, image)
+            uc_size = os.path.getsize(tmp_file_uncompressed)
+            c_size = os.path.getsize(tmp_file_compressed)
+        finally:
+            os.remove(tmp_file_compressed)
+            os.remove(tmp_file_uncompressed)
+        feature_vals.append(1.0*c_size/uc_size)
+    return feature_vals
 
 @FILE
-def getImageFileHeightFeature(image):  
-    return image.shape[0]
+def getImageFileHeightFeature(images):  
+    return [images[:,:,i].shape[0] for i in xrange(images.shape[2])]
 
 @FILE
-def getImageFileLengthFeature(image):
-    return image.shape[1]
+def getImageFileLengthFeature(images):
+    return [images[:,:,i].shape[1] for i in xrange(images.shape[2])]
 
 @FILE
 @MULT
-def getImageFileMinorMajorRatioFeature(image):
-    h = image.shape[0]
-    l = image.shape[1]
-    return np.min([l, h])*1.0/np.max([l, h])
+def getImageFileMinorMajorRatioFeature(images):
+    def npmin(image):
+        return np.min([image.shape[1], image.shape[0]])
+    def npmax(iamge):
+        return np.max([image.shape[1], image.shape[0]])
+    return [npmin(images[:,:,i])*1.0/npmin(images[:,:,i]) for i in xrange(images.shape[2])]
 

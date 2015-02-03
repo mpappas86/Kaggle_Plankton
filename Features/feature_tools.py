@@ -9,9 +9,10 @@ def getFeatures(annotation_list=[]):
     feature_vals = []
     for a in annotation_list:
         features = features.union(set(a.all.values()))
-    return features
+    return np.array(list(features))
 
 def getWhitespaceTrimmed(image):
+    image = np.squeeze(image)
     newimage = None
     for r in image:
         if (np.sum(r)*1.0/len(r) < 255):

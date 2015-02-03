@@ -1,59 +1,48 @@
 import numpy as np
 from skimage import measure, morphology
 import os
-from feature_tools import getLargestRegion, pseudoAutocorrelate, getWhitespaceTrimmed
+from feature_tools import *
 from annotations import *
 
 @SHAPE
-def getHeightFeature(image):
-    image = getWhitespaceTrimmed(image.copy())
-    return image.shape[0]
+def getHeightFeature(images):
+    return [getWhitespaceTrimmed(images[:,:,i]).shape[0] for i in xrange(images.shape[2])]
 
 @SHAPE
-def getLengthFeature(image):
-    image = getWhitespaceTrimmed(image.copy())
-    return image.shape[1]
+def getLengthFeature(images):
+    return [getWhitespaceTrimmed(images[:,:,i]).shape[1] for i in xrange(images.shape[2])]
 
 @SHAPE
 @MULT
-def getMinorMajorRatioFeature(image):
-    image = image.copy()
-    h = getHeightFeature(image)
-    l = getLengthFeature(image)
-    return np.min([l, h])*1.0/np.max([l, h])
+def getMinorMajorRatioFeature(images):
+    h = getHeightFeature(images)
+    l = getLengthFeature(images)
+    return [np.min([l[i], h[i]])*1.0/np.max([l[i], h[i]]) for i in xrange(images.shape[2])]
 
 @SHAPE
-def getHorizontalSymmetryFeature(image):
-    image=image.copy()
-    image2=np.fliplr(image.copy())
-    return pseudoAutocorrelate(image, image2)
+def getHorizontalSymmetryFeature(images):
+    return [pseudoAutocorrelate(images[:,:,i], np.fliplr(images[:,:,i])) for i in xrange(images.shape[2])]
 
 @SHAPE
-def getVerticalSymmetryFeature(image):
-    image=image.copy()
-    image2=np.flipud(image.copy())
-    return pseudoAutocorrelate(image, image2)
+def getVerticalSymmetryFeature(images):
+    return [pseudoAutocorrelate(images[:,:,i], np.flipud(images[:,:,i])) for i in xrange(images.shape[2])]
 
 @SHAPE
-def getTransposalSymmetryFeature(image):
-    image=image.copy()
-    image2=image.copy().T
-    return pseudoAutocorrelate(image, image2)
+def getTransposalSymmetryFeature(images):
+    return [pseudoAutocorrelate(images[:,:,i], images[:,:,i].T) for i in xrange(images.shape[2])]
 
 @SHAPE
-def getCircularSymmetryFeature(image):
-    image=image.copy()
-    hs = getHorizontalSymmetryFeature(image)
-    vs = getVerticalSymmetryFeature(image)
-    ts = getTransposalSymmetryFeature(image)
-    return np.power(hs*vs*ts, 1.0/3)
+def getCircularSymmetryFeature(images):
+    hs = getHorizontalSymmetryFeature(images)
+    vs = getVerticalSymmetryFeature(images)
+    ts = getTransposalSymmetryFeature(images)
+    return [np.power(hs[i]*vs[i]*ts[i], 1.0/3) for i in xrange(images.shape[2])]
 
 @SHAPE
-def getPercentPixelsAboveAverage(image):
-    image = image.copy()
-    image_threshold = image - np.mean(image)
-    over_count = np.where(image_threshold > 0, 1.0, 0.0)
-    return np.sum(over_count)/over_count.size
+def getPercentPixelsAboveAverage(images):
+    def calcPercent(image):
+        return np.sum(np.where(image - np.mean(image) > 0, 1.0, 0.0))/image.size
+    return [calcPercent(images[:,:,i]) for i in xrange(images.shape[2])]
 
 # def getMinorMajorRatioFeature(image):
 #     image = image.copy()
