@@ -10,8 +10,13 @@ class Maxpool_Layer(object):
     def predict(self, data, node):
         node.savedup = np.argmax(data,0)
         return np.max(data,0)[np.newaxis,:]
+
+    def training_predict(self, data, dropout_in, dropout_array, node):
+        data[(1-dropout_in).astype(bool),:] = 0
+        node.savedup = np.argmax(data,0)
+        return np.max(data,0)[np.newaxis,:]
         
-    def backprop(self, upstream, node):
+    def backprop(self, upstream, dropout_in, dropout_array, node):
         delta = np.zeros((self.shape[1],upstream.shape[1]))
         for elnum in xrange(upstream.shape[1]):
             delta[node.savedup[elnum], elnum] = upstream[0,elnum]

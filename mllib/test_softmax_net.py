@@ -43,15 +43,15 @@ out_data = nnet.retrieve_output()
 labels = (np.random.rand(10,data.shape[1]) > 0.5).astype(float)
 
 # test backpropogation
-# print nnet.cost(data, labels)
-# costs = [nnet.cost(data, labels)]
-# for x in xrange(100):
-#     nnet.backprop(data, labels)
-#     print nnet.cost(data, labels)
-#     costs.append(nnet.cost(data, labels))
+print nnet.cost(data, labels)
+costs = [nnet.cost(data, labels)]
+for x in xrange(100):
+    nnet.backprop(data, labels)
+    print nnet.cost(data, labels)
+    costs.append(nnet.cost(data, labels))
 
-# a = [x-y for x,y in zip(costs[0:(len(costs)-1)],costs[1:len(costs)])]
-# print all([x > 0 for x in a])
+a = [x-y for x,y in zip(costs[0:(len(costs)-1)],costs[1:len(costs)])]
+print all([x > 0 for x in a])
 
 # gradient check
 input_layer.set_lrates(0,0)

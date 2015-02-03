@@ -2,8 +2,8 @@ from net import Net
 import numpy as np
 
 class Neural_Net(Net):
-    def __init__(self, input_size, output_size, cost_function=None, dcost=None):
-        super(Neural_Net, self).__init__(input_size, output_size)
+    def __init__(self, input_size, output_size, p=None, cost_function=None, dcost=None):
+        super(Neural_Net, self).__init__(input_size, output_size, p=p)
         assert((cost_function is None)  == (dcost is None))
         if(cost_function is None):
             self.cost_function = lambda x,y: 0.5*((x-y)*(x-y)).sum(0)
@@ -44,8 +44,8 @@ class Neural_Net(Net):
         return rcerror, verror
     
     def backprop(self, data, target):
-        self.input_data(data)
-        self.forward_pass()
+        self.training_input_data(data)
+        self.training_forward_pass()
         net_output = self.retrieve_output()
         self.zero_buffers()
         output_data = self.dcost(net_output, target)
@@ -60,5 +60,11 @@ class Neural_Net(Net):
     def cost(self, data, target):
         self.input_data(data)
         self.forward_pass()
+        net_output = self.retrieve_output()
+        return self.cost_function(net_output, target).sum()
+
+    def check_cost(self, data, target):
+        self.input_data(data)
+        self.check_forward_pass()
         net_output = self.retrieve_output()
         return self.cost_function(net_output, target).sum()
