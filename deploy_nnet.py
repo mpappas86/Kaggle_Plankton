@@ -61,14 +61,14 @@ def augment_with_features(data, feature_list, image_shape):
   if feature_list is None:
     return data
   else:
-    image_size=image_shape[0]*image_shape[1]
     image_height=image_shape[0]
     image_width=image_shape[1]
-    feature_list=list(feature_list)
+    image_size=image_width*image_height
     augmented_data = np.empty((image_size + len(feature_list), data.shape[1]))
-    for row, new_row in zip(data.T, augmented_data.T):
-      new_row[:image_size] = row
-      new_row[image_size:] = [feature_list[i](row.reshape(image_width, image_height)) for i in range(0, len(feature_list))]
+    augmented_data[:image_size, :] = data
+    augmented_data[image_size:, :] = np.squeeze(np.array([(feature_list[i](data.reshape(image_width, image_height, data.shape[1]))) for i in range(0, len(feature_list))]))
+    #for row, new_row in zip(data.T, augmented_data.T):
+    #  new_row[image_size:] = [feature_list[i](row.reshape(image_width, image_height)) for i in range(0, len(feature_list))]
     return augmented_data
 
 def deploy(rawdata, image_shape, nnet, num_epochs=10, feature_list=None):
