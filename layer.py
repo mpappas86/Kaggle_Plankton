@@ -63,7 +63,7 @@ class Layer(object):
                 for row in self.W:
                     b = np.linalg.norm(row)
                     if b > self.c:
-                        row[:] = row[:]*(c/b)
+                        row[:] = row[:]*(self.c/b)
             self.updated_yet = True
         
     def set_f(self,f):
