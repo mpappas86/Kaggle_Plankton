@@ -19,6 +19,7 @@ class Layer(object):
         self.nu = 0
         self.lrb = 0.1
         self.nub = 0
+        self.c = None
         self.Wspeed = np.zeros(self.W.shape)
         self.bspeed = np.zeros(self.b.shape)
         self.Wgrad = np.zeros(self.W.shape)
@@ -52,6 +53,19 @@ class Layer(object):
         self.W = weights[:np.size(self.W)].reshape(self.W.shape)
         self.b = weights[np.size(self.W):].reshape(self.b.shape)
 
+    def update_weights(self):
+        if not self.updated_yet:
+            self.Wspeed = self.nu*self.Wspeed - (self.lr*self.lam)*self.W - self.lr/self.batch_size*self.Wgrad
+            self.bspeed = self.nub*self.bspeed - self.lrb/self.batch_size*self.bgrad
+            self.W += self.Wspeed
+            self.b += self.bspeed
+            if not self.c is None:
+                for row in self.W:
+                    b = np.linalg.norm(row)
+                    if b > self.c:
+                        row[:] = row[:]*(c/b)
+            self.updated_yet = True
+        
     def set_f(self,f):
         self.f = f
 
@@ -65,3 +79,18 @@ class Layer(object):
 
     def set_weight_decay(self, lam):
         self.lam = lam
+
+    def set_row_norm(self, c):
+        if c is None:
+            self.c = None
+        else:
+            self.c = float(c)
+
+    def set_hyper_params(self, lr=0.1, lrb=0.1, nu=0.0, nub=0.0, lam=0.0, c=None):
+        self.lr = lr
+        self.lrb = lrb        
+        self.nu = nu
+        self.nub = nub
+        self.lam = lam        
+        self.c = c
+        

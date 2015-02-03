@@ -5,7 +5,6 @@ class Neural_Layer(Layer):
     def __init__(self, input_size, output_size, order=None):
         super(Neural_Layer, self).__init__(input_size, output_size, order=order)
         self.df = lambda x: 0*x+1
-        self.updated_yet = True
 
     # Each row of the data is a feature, and each column is a sample
     def training_predict(self, data, dropout_in, dropout_array, node):
@@ -30,14 +29,6 @@ class Neural_Layer(Layer):
         node.savedup = None
         node.dataup = None
         return self.W[oi,ii].T.dot(delta)
-
-    def update_weights(self):
-        if not self.updated_yet:
-            self.Wspeed = self.nu*self.Wspeed - (self.lr*self.lam)*self.W - self.lr/self.batch_size*self.Wgrad
-            self.bspeed = self.nub*self.bspeed - self.lrb/self.batch_size*self.bgrad
-            self.W += self.Wspeed
-            self.b += self.bspeed
-            self.updated_yet = True
 
     def set_df(self, df):
         self.df = df
