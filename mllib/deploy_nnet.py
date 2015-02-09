@@ -66,7 +66,7 @@ def augment_with_features(data, feature_list, image_shape):
     image_size=image_width*image_height
     augmented_data = np.empty((image_size + len(feature_list), data.shape[1]))
     augmented_data[:image_size, :] = data
-    reshaped_data = data.reshape(image_width, image_height, data.shape[1]))
+    reshaped_data = data.reshape(image_width, image_height, data.shape[1])
     augmented_data[image_size:, :] = np.squeeze(np.array([feature_list[i](reshaped_data) for i in range(0, len(feature_list))]))
     return augmented_data
 
