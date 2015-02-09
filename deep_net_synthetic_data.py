@@ -20,8 +20,8 @@ image_size = image_width*image_height
 rawdata = read_training(image_width, image_height)
 
 feature_list=getFeatures()
-input_size=image_size#+len(feature_list)
+input_size=image_size+len(feature_list)
 
 nnet, gfile = plankton_nnet.build(input_size, glrate=0.01)
 
-plankton_nnet.deploy(rawdata, (image_height, image_width), nnet)#, feature_list=feature_list)
+plankton_nnet.deploy(rawdata, (image_height, image_width), nnet, feature_list=feature_list)
