@@ -66,9 +66,8 @@ def augment_with_features(data, feature_list, image_shape):
     image_size=image_width*image_height
     augmented_data = np.empty((image_size + len(feature_list), data.shape[1]))
     augmented_data[:image_size, :] = data
-    augmented_data[image_size:, :] = np.squeeze(np.array([(feature_list[i](data.reshape(image_width, image_height, data.shape[1]))) for i in range(0, len(feature_list))]))
-    #for row, new_row in zip(data.T, augmented_data.T):
-    #  new_row[image_size:] = [feature_list[i](row.reshape(image_width, image_height)) for i in range(0, len(feature_list))]
+    reshaped_data = data.reshape(image_width, image_height, data.shape[1]))
+    augmented_data[image_size:, :] = np.squeeze(np.array([feature_list[i](reshaped_data) for i in range(0, len(feature_list))]))
     return augmented_data
 
 def deploy(rawdata, image_shape, nnet, num_epochs=10, feature_list=None):
