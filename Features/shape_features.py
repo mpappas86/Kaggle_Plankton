@@ -4,39 +4,66 @@ import os
 from feature_tools import *
 from annotations import *
 
+#The below section serves as an effective cache for whitespace trimmed images so we don't recompute
+#several times.
+############################
+recent_images = np.array([])
+trimmed_images = np.array([])
+
+def load_to_recent_images(images):
+    global recent_images
+    global trimmed_images
+    if(np.array(recent_images==images).all()):
+        return True
+    else:
+        recent_images=images
+        trimmed_images=np.array([getWhitespaceTrimmed(images[:,:,i]) for i in xrange(images.shape[2])]).T
+        return False
+#############################
+
 @SHAPE
 def getHeightFeature(images):
+    if(load_to_recent_images(images)):
+        return [trimmed_images[:,:,i].shape[0] for i in xrange(recent_images.shape[2])]
     return [getWhitespaceTrimmed(images[:,:,i]).shape[0] for i in xrange(images.shape[2])]
 
 @SHAPE
 def getLengthFeature(images):
+    if(load_to_recent_images(images)):
+        return [trimmed_images[:,:,i].shape[1] for i in xrange(recent_images.shape[2])]
     return [getWhitespaceTrimmed(images[:,:,i]).shape[1] for i in xrange(images.shape[2])]
 
 @SHAPE
 @MULT
 def getMinorMajorRatioFeature(images):
-    h = getHeightFeature(images)
-    l = getLengthFeature(images)
-    return [np.min([l[i], h[i]])*1.0/np.max([l[i], h[i]]) for i in xrange(images.shape[2])]
-
+    h = np.array(getHeightFeature(images))
+    l = np.array(getLengthFeature(images))
+    return np.min([l, h], axis=0)*1.0/np.max([l, h], axis=0)
+    
 @SHAPE
 def getHorizontalSymmetryFeature(images):
-    return [pseudoAutocorrelate(images[:,:,i], np.fliplr(images[:,:,i])) for i in xrange(images.shape[2])]
+    def computeVal(image):
+        return pseudoAutocorrelate(image, np.fliplr(image))
+    return [computeVal(images[:,:,i]) for i in xrange(images.shape[2])]
 
 @SHAPE
 def getVerticalSymmetryFeature(images):
-    return [pseudoAutocorrelate(images[:,:,i], np.flipud(images[:,:,i])) for i in xrange(images.shape[2])]
-
+    def computeVal(image):
+        return pseudoAutocorrelate(image, np.flipud(image))
+    return [computeVal(images[:,:,i]) for i in xrange(images.shape[2])]
+    
 @SHAPE
 def getTransposalSymmetryFeature(images):
-    return [pseudoAutocorrelate(images[:,:,i], images[:,:,i].T) for i in xrange(images.shape[2])]
+    def computeVal(image):
+        return pseudoAutocorrelate(image, image.T)
+    return [computeVal(images[:,:,i]) for i in xrange(images.shape[2])]
 
 @SHAPE
 def getCircularSymmetryFeature(images):
-    hs = getHorizontalSymmetryFeature(images)
-    vs = getVerticalSymmetryFeature(images)
-    ts = getTransposalSymmetryFeature(images)
-    return [np.power(hs[i]*vs[i]*ts[i], 1.0/3) for i in xrange(images.shape[2])]
+    hs = np.array(getHorizontalSymmetryFeature(images))
+    vs = np.array(getVerticalSymmetryFeature(images))
+    ts = np.array(getTransposalSymmetryFeature(images))
+    return np.power(hs*vs*ts, 1.0/3)
 
 @SHAPE
 def getPercentPixelsAboveAverage(images):

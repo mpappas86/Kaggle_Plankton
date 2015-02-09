@@ -15,7 +15,7 @@ def getWhitespaceTrimmed(image):
     image = np.squeeze(image)
     newimage = None
     for r in image:
-        if (np.sum(r)*1.0/len(r) < 255):
+        if (np.sum(r)*1.0/len(r) < 200):
             if(newimage is None):
                 newimage = r
             else:
@@ -23,7 +23,7 @@ def getWhitespaceTrimmed(image):
     newimage=newimage.T
     finalimage=None
     for c in newimage:
-        if (np.sum(c)*1.0/len(c) < 255):
+        if (np.sum(c)*1.0/len(c) < 200):
             if(finalimage is None):
                 finalimage = c
             else:
